@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title id="page-title">Hệ thống Theo dõi Nhiệm vụ Cấp xã</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,600;0,700;1,400&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#F5F3F1; --surface:#FFFFFF; --surface-2:#EFEBE8; --ink:#1E1918; --ink-2:#524845; --ink-3:#7A6F6B; --line:#D5CCC7;
+  --brand:#A3161C; --brand-deep:#7E0F15; --on-brand:#FFF8E8; --gold:#F0C02A; --gold-ink:#7B5800;
+  --accent:#A3161C; --on-accent:#FFFFFF; --link:#9A141A; --focus:#1D5FBF;
+  --st-good:#0CA30C; --st-warn:#D98A00; --st-crit:#C82828; --st-neutral:#4F7396;
+  --good-bg:#E4F4E4; --warn-bg:#FFF1CF; --crit-bg:#FBE4E2; --neutral-bg:#E6EDF4;
+  --shadow:0 2px 6px rgba(60,20,10,.07), 0 10px 28px rgba(60,20,10,.08);
+  --f-ui:"Be Vietnam Pro", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --f-doc:"Noto Serif", "Times New Roman", Times, serif;
+  --t-hero:54px; --t-so:28px; --t-h:21px; --t-body:16px; --t-nho:14.5px; --t-nhan:13px;
+  --k1:6px; --k2:10px; --k3:14px; --k4:18px; --k5:22px; --bd-cao:220px;
+  --font-scale:1;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#161211; --surface:#201A19; --surface-2:#2C2422; --ink:#F5EFEA; --ink-2:#C9BDB7; --ink-3:#9B8F8A; --line:#423734;
+  --brand:#8F1218; --brand-deep:#6C0B11; --on-brand:#FFF3D6; --gold:#F2C744; --gold-ink:#F2C744;
+  --accent:#C8342E; --on-accent:#FFFFFF; --link:#FF9B93; --focus:#8DB9F5;
+  --good-bg:#16301A; --warn-bg:#3A2D0C; --crit-bg:#43201E; --neutral-bg:#1E2B38;
+  --shadow:0 2px 8px rgba(0,0,0,.45), 0 12px 28px rgba(0,0,0,.4); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#161211; --surface:#201A19; --surface-2:#2C2422; --ink:#F5EFEA; --ink-2:#C9BDB7; --ink-3:#9B8F8A; --line:#423734;
+  --brand:#8F1218; --brand-deep:#6C0B11; --on-brand:#FFF3D6; --gold:#F2C744; --gold-ink:#F2C744;
+  --accent:#C8342E; --on-accent:#FFFFFF; --link:#FF9B93; --focus:#8DB9F5;
+  --good-bg:#16301A; --warn-bg:#3A2D0C; --crit-bg:#43201E; --neutral-bg:#1E2B38;
+  --shadow:0 2px 8px rgba(0,0,0,.45), 0 12px 28px rgba(0,0,0,.4); color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{font-size:calc(16px * var(--font-scale))}
+body{margin:0;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:1rem;line-height:1.58;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;min-height:40px}
+.btn.nho{min-height:36px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:5px}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:20px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Tiêu đề */
+.mast{background:var(--brand);color:var(--on-brand);border-bottom:4px solid var(--gold)}
+.mast .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;padding-block:16px}
+.thethuc{text-align:center;font-family:var(--f-doc);font-weight:700;font-size:0.875rem;line-height:1.35;letter-spacing:.02em;flex:none}
+.thethuc .tieu-ngu{display:block;font-size:0.8125rem;font-weight:600;opacity:.94}
+.thethuc .sao{display:block;color:var(--gold);font-size:0.95rem;line-height:1.1;margin-top:3px}
+.mast .tieude{flex:1 1 320px;min-width:0}
+.mast h1{font-family:var(--f-doc);font-weight:700;font-size:clamp(1.25rem,2.4vw,1.75rem);line-height:1.25;margin:0;text-wrap:balance}
+.mast .phu{margin:4px 0 0;font-size:0.9375rem;opacity:.94;max-width:66ch}
+.mast .ben{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 1 auto;min-width:0}
+@media (max-width:900px){.mast .ben{align-items:flex-start;width:100%}}
+.diadanh{font-family:var(--f-doc);font-style:italic;font-size:0.9375rem}
+.dongbo-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:flex-end}
+@media (max-width:900px){.dongbo-row{justify-content:flex-start}}
+.dongbo{display:inline-flex;align-items:center;gap:7px;font-size:0.84rem;padding:4px 12px;border-radius:999px;background:var(--brand-deep);color:var(--on-brand);font-weight:500}
+.dongbo i{width:9px;height:9px;border-radius:50%;background:var(--gold);flex:none}
+.dongbo.ok i{background:#6BE08A}.dongbo.loi i{background:#FFB0A8}.dongbo.sync i{background:#7CC4FF}
+.user-chip{display:inline-flex;align-items:center;gap:6px;font-size:0.875rem;padding:4px 12px;border-radius:999px;background:rgba(255,248,232,.14);border:1px solid rgba(255,248,232,.35);color:var(--on-brand);font-weight:600}
+.hd-nut{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+@media (max-width:900px){.hd-nut{justify-content:flex-start}}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;font-weight:600;line-height:1.3;display:inline-flex;align-items:center;gap:6px;font-size:0.9375rem}
+.btn:hover{background:var(--surface-2)}
+.btn.chinh{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.chinh:hover{filter:brightness(1.08)}
+.btn.nho{padding:6px 11px;font-size:0.875rem}
+.btn.nguyhiem{color:var(--link);border-color:var(--st-crit)}
+.btn:disabled{opacity:.48;cursor:not-allowed}
+.btn.tren-do{background:transparent;border-color:rgba(255,248,232,.5);color:var(--on-brand)}
+.btn.tren-do:hover{background:var(--brand-deep);border-color:var(--gold)}
+.btn.tren-do.can-luu{background:var(--gold);border-color:var(--gold);color:#2A1E00}
+.lienket{appearance:none;border:0;background:none;padding:0;color:var(--link);font-weight:600;text-decoration:underline;text-underline-offset:3px;min-height:auto}
+
+/* Điều hướng */
+.tabs{background:var(--surface);border-bottom:2px solid var(--line);position:sticky;top:0;z-index:10}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+.tab{appearance:none;border:0;background:none;padding:13px 15px 11px;font-weight:600;font-size:0.96rem;color:var(--ink-2);border-bottom:3px solid transparent;white-space:nowrap;display:inline-flex;align-items:center;min-height:46px}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--link);border-bottom-color:var(--accent);background:transparent}
+.tab .dem{font-weight:700;font-size:0.82rem;margin-left:7px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+.tab .dem.nong{background:var(--crit-bg);color:var(--ink)}
+
+main{padding-block:20px 64px;display:flex;flex-direction:column;gap:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.panel>header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:16px 20px 0}
+.panel h2{font-family:var(--f-doc);font-weight:700;font-size:1.2rem;margin:0;text-wrap:balance}
+.panel .chuthich{color:var(--ink-2);font-size:0.9rem}
+.panel .than{padding:16px 20px 20px;min-width:0}
+h3{font-size:1rem;font-weight:700;margin:0}
+.nhan{font-size:0.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2)}
+
+/* Chế độ công khai */
+body[data-cong-khai="1"] #tq-cv,
+body[data-cong-khai="1"] [data-tab="phan-cong"],
+body[data-cong-khai="1"] [data-tab="nhap-van-ban"],
+body[data-cong-khai="1"] [data-tab="quan-tri"],
+body[data-cong-khai="1"] #tab-phan-cong,
+body[data-cong-khai="1"] #tab-nhap-van-ban,
+body[data-cong-khai="1"] #tab-quan-tri,
+body[data-cong-khai="1"] [data-k="cvTheoDoi"],
+body[data-cong-khai="1"] [data-mau="dondoc"],
+body[data-cong-khai="1"] .can-ghi,
+body[data-cong-khai="1"] .col-cv{display:none!important}
+
+/* Phân quyền theo vai trò */
+body:not([data-role="admin"]) .admin-only{display:none!important}
+body[data-role="viewer"] .can-ghi{display:none!important}
+
+/* Cảnh báo & chấm trạng thái */
+.canhbao{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:14px 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:0.96rem}
+.canhbao.co{background:var(--warn-bg);border-color:var(--st-warn)}
+.canhbao .bieu{width:30px;height:30px;border-radius:50%;background:var(--st-warn);color:#2A1E00;display:grid;place-items:center;font-weight:700;flex:none;font-size:1rem}
+.canhbao p{margin:0;flex:1 1 280px;min-width:0}
+.cham{width:11px;height:11px;border-radius:3px;flex:none;display:inline-block}
+.cham.good{background:var(--st-good)}.cham.warn{background:var(--st-warn)}.cham.crit{background:var(--st-crit)}.cham.neutral{background:var(--st-neutral)}
+
+/* Dashboard tổng quan */
+.tq{display:flex;flex-direction:column;gap:var(--k4)}
+.tq-dau{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--k3) var(--k5)}
+.tq-h{font-family:var(--f-doc);font-size:1.35rem;font-weight:700;margin:0;line-height:1.25}
+.tq-phu{margin:4px 0 0;color:var(--ink-2);font-size:0.9375rem;font-variant-numeric:tabular-nums}
+.tq-loc{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px}
+.tq-loc select{width:auto;max-width:100%}
+.tq-luoi{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--k4)}
+.tq-luoi>*{min-width:0}
+.c4{grid-column:span 4}.c6{grid-column:span 6}.c8{grid-column:span 8}.c12{grid-column:1/-1}
+@media (max-width:1040px){.c4,.c8{grid-column:1/-1}}
+@media (max-width:780px){.c6{grid-column:1/-1}.tq-luoi{gap:var(--k3)}}
+.panel>header .day-phai{margin-left:auto}
+
+.hero{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:var(--k5);display:flex;flex-direction:column;gap:var(--k3);box-shadow:var(--shadow)}
+.hero.crit{background:var(--crit-bg);border-color:var(--st-crit)}
+.hero.warn{background:var(--warn-bg);border-color:var(--st-warn)}
+.hero.good{background:var(--good-bg);border-color:var(--st-good)}
+.hero-so{display:flex;align-items:baseline;gap:10px}
+.hero-so b{font-size:3.25rem;line-height:1;font-weight:700;letter-spacing:-.02em}
+.hero-so span{font-weight:600;color:var(--ink-2);font-size:1rem}
+.hero p{margin:0;max-width:48ch;font-size:0.96rem}
+.hero-muc{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+.hang{appearance:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:11px 14px}
+.hang:hover{border-color:var(--ink-3)}
+.hang b{font-size:1.125rem;font-variant-numeric:tabular-nums}
+.hang .mui{color:var(--ink-3);font-weight:700;font-size:1.1rem}
+.hang small{display:block;color:var(--ink-2);font-size:0.875rem}
+
+.toan{display:flex;flex-direction:column}.toan .than{flex:1;display:flex;flex-direction:column}
+.toan .tong{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 14px}
+.toan .tong b{font-size:2rem;font-weight:700;line-height:1.1}
+.toan .tong span{color:var(--ink-2);font-size:1rem}
+.phanbo{display:flex;gap:3px;height:16px;margin:var(--k3) 0}
+.phanbo i{display:block;min-width:6px}
+.phanbo i:first-child{border-radius:5px 0 0 5px}.phanbo i:last-child{border-radius:0 5px 5px 0}.phanbo i:only-child{border-radius:5px}
+.phanbo.rong{background:var(--surface-2);border-radius:5px}
+:is(.phanbo,.chong,.tip,.thanhchong) .good{background:var(--st-good)}
+:is(.phanbo,.chong,.tip,.thanhchong) .neutral{background:var(--st-neutral)}
+:is(.phanbo,.chong,.tip,.thanhchong) .warn{background:var(--st-warn)}
+:is(.phanbo,.chong,.tip,.thanhchong) .crit{background:var(--st-crit)}
+
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:var(--k4);flex:1}
+.kpi button{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:13px 15px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
+.kpi button:hover{border-color:var(--ink-3);background:var(--surface-2)}
+.kpi .ten{font-size:0.9rem;font-weight:600;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.kpi .so{font-size:1.75rem;font-weight:700;line-height:1.15}
+.kpi .them{font-size:0.875rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+@media (max-width:640px){.kpi{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-so b{font-size:2.6rem}}
+.sukien{display:flex;flex-wrap:wrap;gap:8px 24px;margin:auto 0 0;padding:var(--k3) 0 0;border-top:1px solid var(--line);font-size:0.9rem;color:var(--ink-2)}
+.sukien b{color:var(--ink);font-variant-numeric:tabular-nums}
+.sukien button{appearance:none;border:0;background:none;padding:0;color:inherit;text-decoration:underline;text-underline-offset:3px;min-height:auto}
+
+/* Danh sách cần xử lý */
+.muc{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.muc li{border-top:1px solid var(--line)}
+.muc li:first-child{border-top:0}
+.muc button{appearance:none;border:0;background:none;width:100%;text-align:left;display:grid;grid-template-columns:132px minmax(0,1fr);gap:4px 12px;padding:11px 6px;border-radius:7px}
+.muc button:hover{background:var(--surface-2)}
+.muc .ngay{font-weight:700;font-variant-numeric:tabular-nums;font-size:0.9375rem}
+.muc .ngay small{display:block;font-weight:600;color:var(--ink-2);font-size:0.84rem}
+.muc .nd{align-self:start;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:0.95rem}
+.muc .dv{grid-column:2;color:var(--ink-2);font-size:0.875rem;overflow-wrap:anywhere}
+.trong{color:var(--ink-2);padding:18px 6px;margin:0;font-size:0.95rem}
+@media (max-width:580px){.muc button{grid-template-columns:minmax(0,1fr)}.muc .dv{grid-column:1}}
+
+/* Biểu đồ cột theo tháng */
+.bd-cuon{overflow-x:auto;padding-top:12px}
+.bd{display:grid;grid-template-columns:36px minmax(0,1fr);gap:0 8px;min-width:520px}
+.bd-truc{position:relative;height:var(--bd-cao);font-size:0.82rem;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.bd-truc span{position:absolute;right:0;transform:translateY(50%);line-height:1}
+.bd-ve{position:relative;height:var(--bd-cao);min-width:0}
+.bd-ve>i{position:absolute;left:0;right:0;height:1px;background:var(--line)}
+.bd-cot{position:absolute;inset:0;display:flex;align-items:stretch;gap:4px}
+.bcot{appearance:none;border:0;background:none;padding:0;flex:1 1 0;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;border-radius:5px 5px 0 0}
+.bcot:hover,.bcot:focus-visible{background:var(--surface-2)}
+.bcot .gt{font-size:0.85rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;margin-bottom:5px}
+.bcot .chong{width:min(28px,72%);display:flex;flex-direction:column-reverse;gap:2px;border-radius:5px 5px 0 0;overflow:hidden;flex:none}
+.bcot .chong i{display:block;min-height:3px}
+.bd-nhan{grid-column:2;display:flex;gap:4px;margin-top:8px}
+.bd-nhan span{flex:1 1 0;min-width:0;text-align:center;font-size:0.85rem;color:var(--ink-2);line-height:1.3;font-variant-numeric:tabular-nums}
+.bd-nhan span.nay{color:var(--ink);font-weight:700}
+.bd-nhan small{display:block;font-size:0.78rem;color:var(--ink-3);font-weight:500;min-height:1.3em}
+.bd-chan,.chugiai{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-top:var(--k3);font-size:0.9rem;color:var(--ink-2)}
+.bd-chan span,.chugiai span{display:inline-flex;align-items:center;gap:7px}
+.bd-bang{margin-top:var(--k3)}
+.bd-bang th,.bd-bang td{padding:8px 10px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:0.9rem}
+.bd-bang thead th{border-top:0;font-size:0.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.bd-bang th:first-child,.bd-bang td:first-child{text-align:left;padding-left:6px}
+
+/* Cập nhật gần đây */
+.moi ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.moi li{padding:11px 0;border-top:1px solid var(--line)}
+.moi li:first-child{border-top:0;padding-top:0}
+.moi .dong1{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.moi time{font-size:0.84rem;color:var(--ink-2);font-variant-numeric:tabular-nums;margin-left:auto}
+.moi .tthai{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:6px}
+.moi .nguonvb{font-size:0.85rem;color:var(--ink-2)}
+.moi p{margin:5px 0 0;font-size:0.9375rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+
+/* Tooltip biểu đồ */
+.tip{position:fixed;z-index:30;pointer-events:none;background:var(--ink);color:var(--bg);border-radius:9px;padding:10px 13px;font-size:0.9rem;line-height:1.5;box-shadow:var(--shadow);max-width:min(320px,calc(100vw - 24px))}
+.tip b{display:block;margin-bottom:4px}
+.tip div{display:flex;justify-content:space-between;gap:18px;font-variant-numeric:tabular-nums}
+.tip div span{display:inline-flex;align-items:center;gap:7px;opacity:.9}
+.tip .vach{width:11px;height:4px;border-radius:2px;flex:none}
+.tip em{display:block;font-style:normal;opacity:.78;margin-top:4px;font-size:0.84rem}
+
+/* Thống kê */
+.chon{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:9px;background:var(--surface-2)}
+.chon button{appearance:none;border:0;background:none;padding:6px 13px;border-radius:7px;font-weight:600;font-size:0.9rem;color:var(--ink-2);min-height:36px}
+.chon button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.cuon{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+.tk th,.tk td{padding:9px 11px;border-top:1px solid var(--line);text-align:right;vertical-align:middle;font-variant-numeric:tabular-nums;font-size:0.9375rem}
+.tk thead th{border-top:0;font-size:0.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.tk th:first-child,.tk td:first-child{text-align:left;padding-left:6px}
+.tk td:first-child{min-width:220px}
+.tk td.thanh{min-width:190px;width:28%}
+.tk small{display:block;color:var(--ink-2);font-size:0.85rem}
+.tk tbody tr:hover{background:var(--surface-2)}
+.thanhchong{display:flex;gap:3px;height:14px;border-radius:4px;overflow:hidden;background:var(--surface-2)}
+.thanhchong i{display:block;min-width:4px}
+
+/* Bộ lọc & bảng nhiệm vụ */
+.loc{display:grid;grid-template-columns:minmax(210px,2fr) repeat(6,minmax(130px,1fr));gap:12px;align-items:end}
+.loc .khoang{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,230px));gap:12px;padding-top:12px;border-top:1px dashed var(--line)}
+@media (max-width:1080px){.loc{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.loc,.loc .khoang{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.loc,.loc .khoang{grid-template-columns:1fr}}
+.o{display:flex;flex-direction:column;gap:5px;min-width:0}
+.o>span{font-size:0.875rem;font-weight:600;color:var(--ink-2)}
+.o small{font-size:0.84rem;color:var(--ink-2)}
+input[type=text],input[type=search],input[type=date],input[type=number],input[type=password],select,textarea{width:100%;min-width:0;min-height:40px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 11px;font-size:0.95rem}
+textarea{resize:vertical;min-height:80px;line-height:1.5}
+.congcu{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px}
+.congcu .dem{margin-right:auto;color:var(--ink-2);font-size:0.9375rem;font-weight:600}
+.ds th,.ds td{padding:11px 12px;border-top:1px solid var(--line);text-align:left;vertical-align:top;font-size:0.95rem}
+.ds thead th{border-top:0;font-size:0.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.ds tbody tr{cursor:pointer}
+.ds tbody tr:hover{background:var(--surface-2)}
+.ds .c-ma{white-space:nowrap}
+.ds .c-nd{min-width:250px}
+.ds .c-dv{min-width:140px;max-width:240px;overflow-wrap:anywhere}
+.ds .c-han{white-space:nowrap}
+.ds small{display:block;color:var(--ink-2);font-size:0.85rem;margin-top:2px}
+.ma{appearance:none;border:0;background:none;padding:0;font-weight:700;color:var(--link);font-variant-numeric:tabular-nums;font-size:0.95rem;min-height:auto}
+.ds .nd{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:4px 11px 4px 9px;border-radius:999px;font-size:0.85rem;font-weight:600;white-space:nowrap;color:var(--ink);background:var(--surface-2)}
+.pill.quahan{background:var(--crit-bg)}.pill.saphan{background:var(--warn-bg)}.pill.xong{background:var(--good-bg)}.pill.dang{background:var(--neutral-bg)}.pill.admin-pill{background:var(--warn-bg);border:1px solid var(--st-warn)}
+.pill .cham{border-radius:50%}
+@media (max-width:780px){
+  .ds thead{display:none}
+  .ds,.ds tbody,.ds tr,.ds td{display:block;width:100%}
+  .ds tr{border-top:1px solid var(--line);padding:14px 4px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 10px}
+  .ds td{border:0;padding:0;min-width:0;max-width:none}
+  .ds .c-nd,.ds .c-dv{grid-column:1/-1}
+  .ds .c-sua{justify-self:end}
+  .ds .c-tt{grid-row:1;grid-column:2;justify-self:end}
+}
+
+/* Nút xuất báo cáo */
+.xuat{position:relative;display:inline-block}
+.xuat>summary{list-style:none;display:inline-flex;align-items:center;gap:7px;cursor:pointer;user-select:none;min-height:36px}
+.xuat>summary::-webkit-details-marker{display:none}
+.xuat>summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.xuat-ds{position:absolute;left:0;top:calc(100% + 6px);z-index:20;width:min(340px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:6px;display:flex;flex-direction:column;gap:3px;color:var(--ink)}
+.xuat.phai .xuat-ds{left:auto;right:0}
+.xuat-ds button{appearance:none;border:0;background:none;text-align:left;padding:10px 12px;border-radius:8px;display:flex;flex-direction:column;gap:2px;color:var(--ink)}
+.xuat-ds button:hover{background:var(--surface-2)}
+.xuat-ds b{font-weight:700;font-size:0.9375rem}
+.xuat-ds small{color:var(--ink-2);font-size:0.84rem;line-height:1.4}
+
+/* Nhập văn bản & phân công & nhật ký & quản trị */
+.buoc{display:flex;flex-direction:column;gap:14px}
+.tep{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.tep input[type=file]{flex:1 1 260px;min-width:0;border:1px dashed var(--ink-3);border-radius:8px;padding:9px;background:var(--surface-2);font-size:0.9rem}
+.tinhtrang{font-size:0.9375rem;color:var(--ink-2);min-height:1.5em}
+.tinhtrang.loi{color:var(--link);font-weight:600}
+.nhom{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px;background:var(--bg)}
+.nhom .dau{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:780px){.nhom .dau{grid-template-columns:minmax(0,1fr)}}
+.dx{border:1px solid var(--line);border-radius:9px;background:var(--surface);padding:12px;display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px 12px}
+.dx input[type=checkbox]{width:19px;height:19px;margin-top:3px;accent-color:var(--accent)}
+.dx .o2{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px}
+@media (max-width:780px){.dx .o2{grid-template-columns:minmax(0,1fr)}}
+
+.pc th,.pc td{padding:10px 12px;border-top:1px solid var(--line);text-align:left;vertical-align:top;font-size:0.95rem}
+.pc thead th{border-top:0;font-size:0.8rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.pc td.so,.pc th.so{text-align:right;font-variant-numeric:tabular-nums}
+.luoi-pc{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px 18px;margin-top:14px}
+.luoi-pc label{display:grid;grid-template-columns:minmax(0,1fr) 200px;gap:10px;align-items:center;font-size:0.92rem;background:var(--bg);padding:8px 10px;border-radius:8px;border:1px solid var(--line)}
+
+.nk{list-style:none;margin:0;padding:0}
+.nk li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 16px;padding:12px 4px;border-top:1px solid var(--line);font-size:0.95rem}
+.nk li:first-child{border-top:0}
+.nk time{color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:0.875rem}
+.nk .dong1{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.nk p{margin:4px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.nk .nguonvb{color:var(--ink-2);font-size:0.875rem}
+@media (max-width:640px){.nk li{grid-template-columns:minmax(0,1fr)}}
+
+/* Quản trị danh mục & người dùng */
+.qt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.qt-grid{grid-template-columns:1fr}}
+.qt-card{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--bg);display:flex;flex-direction:column;gap:12px}
+.qt-card.full{grid-column:1/-1}
+.qt-add{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.qt-add .grow{flex:1 1 200px}
+.qt-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.qt-item{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.qt-item-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.qt-item-title{font-weight:700;font-size:0.95rem}
+.qt-item-sub{font-size:0.85rem;color:var(--ink-2)}
+.qt-item-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Hộp thoại & thông báo */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:0;width:min(860px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:var(--shadow);font-size:0.95rem}
+dialog::backdrop{background:rgba(20,10,8,.6)}
+.dlg-dau{display:flex;align-items:center;gap:10px;padding:15px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface);z-index:2}
+.dlg-dau h2{font-family:var(--f-doc);font-size:1.2rem;margin:0;flex:1}
+.dlg-than{padding:18px 20px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.dlg-than .o{grid-column:span 2}.dlg-than .o.day{grid-column:1/-1}.dlg-than .o.nua{grid-column:span 3}
+@media (max-width:660px){.dlg-than .o,.dlg-than .o.nua{grid-column:1/-1}}
+.dlg-chan{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface);z-index:2}
+.dlg-chan .dan{margin-right:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ls{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px}
+.ls ol{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:0.9rem}
+.ls time{color:var(--ink-2);font-size:0.84rem;font-variant-numeric:tabular-nums}
+.thongbao{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:0.9375rem;z-index:40;max-width:calc(100vw - 32px);box-shadow:var(--shadow)}
+.hint-box{background:var(--neutral-bg);border:1px solid var(--line);border-radius:8px;padding:10px 13px;font-size:0.88rem;color:var(--ink)}
+</style>
+</head>
+<body data-cong-khai="0" data-role="admin">
+
+<header class="mast">
+  <div class="wrap">
+    <div class="thethuc">
+      <span id="cfg-coquan">ĐẢNG ỦY – UBND XÃ</span>
+      <span class="tieu-ngu" id="cfg-tieungu">Đoàn kết – Kỷ cương – Nêu gương – Phát triển</span>
+      <span class="sao" aria-hidden="true">★</span>
+    </div>
+
+    <div class="tieude">
+      <h1 id="cfg-tenhethong">Theo dõi Nhiệm vụ &amp; Kết luận Chỉ đạo Cấp xã</h1>
+      <p class="phu" id="cfg-phude">Quản lý tiến độ nhiệm vụ cấp trên giao, nghị quyết – kết luận cấp xã, phân công cán bộ theo dõi và đôn đốc thực hiện.</p>
+    </div>
+
+    <div class="ben">
+      <div class="diadanh"><span id="cfg-diadanh">Xã Cửa Tùng</span>, <span id="ngay-hom-nay"></span></div>
+      <div class="dongbo-row">
+        <span class="user-chip" id="user-badge">👤 Admin · Toàn quyền</span>
+        <div class="dongbo ok" id="trang-thai-luu"><i></i><span id="chu-luu">Sẵn sàng</span></div>
+      </div>
+      <div class="hd-nut">
+        <button type="button" class="btn nho tren-do" id="btn-co-chu" title="Phóng to / thu nhỏ cỡ chữ">Cỡ chữ: Lớn (100%)</button>
+        <button type="button" class="btn nho tren-do" id="btn-tai-lai" title="Đồng bộ dữ liệu từ Google Sheets">↻ Đồng bộ Sheet</button>
+        <button type="button" class="btn nho tren-do admin-only" id="btn-doi-ten">Tên hệ thống</button>
+        <button type="button" class="btn nho tren-do can-ghi" id="btn-them-nv">+ Thêm nhiệm vụ</button>
+        <button type="button" class="btn nho tren-do" id="btn-tai-khoan">Tài khoản / Phân quyền</button>
+        <button type="button" class="btn nho tren-do" id="btn-che-do">Chế độ: Làm việc</button>
+        <details class="xuat phai" id="menu-xuat">
+          <summary class="btn nho tren-do">Xuất / Sao lưu</summary>
+          <div class="xuat-ds">
+            <button type="button" data-xuat="tonghop"><b>Báo cáo Word (.doc) – Tổng hợp</b><small>Danh sách nhiệm vụ theo bộ lọc hiện tại</small></button>
+            <button type="button" data-xuat="dondoc"><b>Báo cáo Word (.doc) – Đôn đốc</b><small>Nhóm nhiệm vụ quá hạn, sắp hạn và đang thực hiện</small></button>
+            <button type="button" data-xuat="json"><b>Tải tệp dữ liệu (.json)</b><small>Sao lưu toàn bộ nhiệm vụ và cấu hình hệ thống</small></button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Phân khu chức năng">
+  <div class="wrap" role="tablist">
+    <button type="button" class="tab" role="tab" id="tab-tong-quan" data-tab="tong-quan" aria-selected="true">Tổng quan</button>
+    <button type="button" class="tab" role="tab" id="tab-danh-sach" data-tab="danh-sach" aria-selected="false">Danh sách nhiệm vụ <span class="dem num" id="dem-tatca">0</span></button>
+    <button type="button" class="tab" role="tab" id="tab-phan-cong" data-tab="phan-cong" aria-selected="false">Phân công theo dõi</button>
+    <button type="button" class="tab" role="tab" id="tab-nhap-van-ban" data-tab="nhap-van-ban" aria-selected="false">Nhập văn bản / JSON</button>
+    <button type="button" class="tab admin-only" role="tab" id="tab-quan-tri" data-tab="quan-tri" aria-selected="false">Quản trị &amp; Danh mục</button>
+    <button type="button" class="tab" role="tab" id="tab-nhat-ky" data-tab="nhat-ky" aria-selected="false">Nhật ký cập nhật</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <div class="canhbao" id="d-canhbao" hidden>
+    <span class="bieu">!</span>
+    <p id="d-canhbao-nd"></p>
+    <button type="button" class="btn nho" id="btn-loc-canhbao">Xem ngay</button>
+  </div>
+
+  <!-- 1. TỔNG QUAN -->
+  <section id="view-tong-quan" class="tq">
+    <div class="tq-dau">
+      <div>
+        <h2 class="tq-h">Bảng điều hành thực hiện nhiệm vụ</h2>
+        <p class="tq-phu" id="tq-phu"></p>
+      </div>
+      <div class="tq-loc">
+        <label class="o"><span>Lĩnh vực</span>
+          <select id="tq-loc-lv"><option value="">Tất cả lĩnh vực</option></select>
+        </label>
+        <label class="o"><span>Nguồn chỉ đạo</span>
+          <select id="tq-loc-ng"><option value="">Tất cả nguồn chỉ đạo</option></select>
+        </label>
+        <label class="o"><span>Đơn vị / Bộ phận</span>
+          <select id="tq-loc-dv"><option value="">Tất cả bộ phận</option></select>
+        </label>
+        <label class="o" id="tq-cv"><span>Cán bộ theo dõi</span>
+          <select id="tq-loc-cv"><option value="">Tất cả cán bộ</option></select>
+        </label>
+      </div>
+    </div>
+
+    <div class="tq-luoi">
+      <div class="hero c4" id="hero-dondoc">
+        <span class="nhan">Cần ưu tiên đôn đốc</span>
+        <div class="hero-so"><b class="num" id="hero-so">0</b><span id="hero-mo-ta">nhiệm vụ khẩn</span></div>
+        <p id="hero-loi">Đang tổng hợp tình hình nhiệm vụ...</p>
+        <div class="hero-muc" id="hero-muc"></div>
+      </div>
+
+      <article class="panel toan c8">
+        <header>
+          <h2>Toàn bộ nhiệm vụ</h2>
+          <span class="chuthich" id="toan-chuthich"></span>
+        </header>
+        <div class="than">
+          <div class="tong"><b class="num" id="toan-tong">0</b><span id="toan-tyle"></span></div>
+          <div class="phanbo" id="toan-phanbo"></div>
+          <div class="kpi" id="toan-kpi"></div>
+          <div class="sukien" id="toan-sukien"></div>
+        </div>
+      </article>
+
+      <article class="panel c6">
+        <header>
+          <h2>Quá hạn xử lý</h2>
+          <span class="chuthich">Chưa hoàn thành, đã quá thời hạn</span>
+          <button type="button" class="lienket day-phai" data-xem-nhom="quahan">Tất cả →</button>
+        </header>
+        <div class="than"><ul class="muc" id="ds-quahan"></ul></div>
+      </article>
+
+      <article class="panel c6">
+        <header>
+          <h2>Sắp đến hạn (7 ngày)</h2>
+          <span class="chuthich">Cần rà soát, đôn đốc sớm</span>
+          <button type="button" class="lienket day-phai" data-xem-nhom="saphan">Tất cả →</button>
+        </header>
+        <div class="than"><ul class="muc" id="ds-saphan"></ul></div>
+      </article>
+
+      <article class="panel c8">
+        <header>
+          <h2>Hạn hoàn thành theo tháng</h2>
+          <span class="chuthich">Rê chuột hoặc nhấn cột để lọc theo tháng</span>
+        </header>
+        <div class="than">
+          <div class="bd-cuon">
+            <div class="bd" id="bd-thang"></div>
+          </div>
+          <div class="bd-chan">
+            <span><i class="cham crit"></i>Quá hạn</span>
+            <span><i class="cham warn"></i>Sắp đến hạn</span>
+            <span><i class="cham neutral"></i>Đang thực hiện</span>
+            <span><i class="cham good"></i>Đã hoàn thành</span>
+          </div>
+          <div class="cuon bd-bang" id="bd-bang"></div>
+        </div>
+      </article>
+
+      <article class="panel c4 moi">
+        <header>
+          <h2>Cập nhật gần đây</h2>
+          <span class="chuthich">Biến động mới nhất</span>
+        </header>
+        <div class="than"><ol id="ds-moi"></ol></div>
+      </article>
+
+      <article class="panel c12">
+        <header>
+          <h2>Thống kê theo đầu mối</h2>
+          <div class="chon day-phai" role="group" aria-label="Nhóm thống kê">
+            <button type="button" data-nhom="donVi" aria-pressed="true">Bộ phận / Đơn vị</button>
+            <button type="button" data-nhom="linhVuc" aria-pressed="false">Lĩnh vực</button>
+            <button type="button" data-nhom="nguon" aria-pressed="false">Nguồn chỉ đạo</button>
+            <button type="button" data-nhom="cvTheoDoi" aria-pressed="false" class="col-cv">Cán bộ theo dõi</button>
+          </div>
+        </header>
+        <div class="than">
+          <div class="chugiai">
+            <span><i class="cham good"></i>Đã hoàn thành</span>
+            <span><i class="cham neutral"></i>Đang thực hiện</span>
+            <span><i class="cham warn"></i>Sắp đến hạn</span>
+            <span><i class="cham crit"></i>Quá hạn</span>
+          </div>
+          <div class="cuon"><table class="tk" id="bang-thongke"></table></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 2. DANH SÁCH NHIỆM VỤ -->
+  <section id="view-danh-sach" hidden>
+    <article class="panel">
+      <header>
+        <h2>Danh sách nhiệm vụ</h2>
+        <span class="chuthich">Nhấn vào từng dòng để xem chi tiết hoặc cập nhật tiến độ</span>
+      </header>
+      <div class="than">
+        <form class="loc" id="form-loc" onsubmit="return false">
+          <label class="o"><span>Từ khóa</span>
+            <input type="search" id="f-q" placeholder="Mã NV, nội dung, kết quả, số văn bản...">
+          </label>
+          <label class="o"><span>Trạng thái</span>
+            <select id="f-tt">
+              <option value="">Tất cả</option>
+              <option value="quahan">Quá hạn</option>
+              <option value="saphan">Sắp đến hạn (≤ 7 ngày)</option>
+              <option value="dang">Đang thực hiện</option>
+              <option value="xong">Đã hoàn thành</option>
+            </select>
+          </label>
+          <label class="o"><span>Lĩnh vực</span>
+            <select id="f-lv"><option value="">Tất cả</option></select>
+          </label>
+          <label class="o"><span>Đơn vị / Bộ phận</span>
+            <select id="f-dv"><option value="">Tất cả</option></select>
+          </label>
+          <label class="o"><span>Nguồn chỉ đạo</span>
+            <select id="f-ng"><option value="">Tất cả</option></select>
+          </label>
+          <label class="o col-cv"><span>Cán bộ theo dõi</span>
+            <select id="f-cv"><option value="">Tất cả</option></select>
+          </label>
+          <label class="o"><span>Sắp xếp</span>
+            <select id="f-sort">
+              <option value="han">Hạn xử lý (sớm nhất)</option>
+              <option value="capnhat">Cập nhật mới nhất</option>
+              <option value="tiendo">Tiến độ (thấp → cao)</option>
+              <option value="ma">Mã nhiệm vụ</option>
+            </select>
+          </label>
+          <div class="khoang">
+            <label class="o"><span>Từ hạn</span><input type="date" id="f-tu"></label>
+            <label class="o"><span>Đến hạn</span><input type="date" id="f-den"></label>
+            <label class="o"><span>Tháng hạn</span><input type="month" id="f-thang"></label>
+            <div class="o" style="justify-content:end">
+              <span>&nbsp;</span>
+              <button type="button" class="btn nho" id="f-reset">Xóa bộ lọc</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="congcu">
+          <span class="dem num" id="f-dem">0 nhiệm vụ</span>
+          <button type="button" class="btn nho can-ghi" id="btn-them-nv-2">+ Thêm nhiệm vụ</button>
+        </div>
+
+        <div class="cuon" style="margin-top:12px">
+          <table class="ds">
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Nội dung &amp; kết quả</th>
+                <th>Bộ phận / Đầu mối</th>
+                <th class="col-cv">Cán bộ theo dõi</th>
+                <th>Hạn</th>
+                <th>Trạng thái</th>
+                <th class="can-ghi">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="ds-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 3. PHÂN CÔNG THEO DÕI -->
+  <section id="view-phan-cong" hidden>
+    <article class="panel">
+      <header>
+        <h2>Phân công cán bộ theo dõi</h2>
+        <span class="chuthich">Theo dõi khối lượng công việc và phân công trực tiếp từng nhiệm vụ</span>
+      </header>
+      <div class="than">
+        <div class="cuon">
+          <table class="pc" id="bang-pc"></table>
+        </div>
+        <details class="sua" open style="margin-top:16px">
+          <summary style="font-weight:700;cursor:pointer">Phân công nhanh theo từng nhiệm vụ</summary>
+          <div class="luoi-pc" id="luoi-pc"></div>
+        </details>
+      </div>
+    </article>
+  </section>
+
+  <!-- 4. NHẬP VĂN BẢN / JSON -->
+  <section id="view-nhap-van-ban" hidden>
+    <article class="panel">
+      <header>
+        <h2>Nhập văn bản chỉ đạo hoặc tệp dữ liệu (.json)</h2>
+        <span class="chuthich">Tách tự động các dòng/đoạn văn bản thành nhiệm vụ đề xuất hoặc khôi phục bản sao lưu JSON</span>
+      </header>
+      <div class="than buoc">
+        <div class="tep">
+          <input type="file" id="nhap-file" accept=".json,.txt,.md">
+          <button type="button" class="btn nho admin-only" id="btn-khoi-phuc-mau">Nạp dữ liệu mẫu cấp xã</button>
+        </div>
+        <label class="o"><span>Nội dung văn bản kết luận, công văn hoặc JSON</span>
+          <textarea id="nhap-text" placeholder="Dán nội dung thông báo kết luận, kế hoạch hoặc dán JSON xuất từ hệ thống...&#10;Mỗi dòng hoặc mỗi đoạn có dấu mốc (ví dụ: 1., -, •, Nhiệm vụ:) sẽ được gợi ý tách thành 1 nhiệm vụ."></textarea>
+        </label>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button type="button" class="btn chinh can-ghi" id="btn-tach-nhiemvu">Phân tích &amp; Tạo danh sách đề xuất</button>
+          <span class="tinhtrang" id="nhap-tinhtrang"></span>
+        </div>
+        <div id="nhap-ketqua"></div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 5. QUẢN TRỊ DANH MỤC & NGƯỜI DÙNG (CHỈ ADMIN) -->
+  <section id="view-quan-tri" class="admin-only" hidden>
+    <article class="panel">
+      <header>
+        <h2>Quản trị Danh mục chuẩn, Mã nhóm nhiệm vụ &amp; Người dùng</h2>
+        <span class="chuthich">Chỉ Admin có quyền thêm/sửa/xóa Lĩnh vực, Nguồn chỉ đạo (kèm mã nhóm như BT, BTV...), Đơn vị chủ trì, Cán bộ theo dõi và Tài khoản</span>
+      </header>
+      <div class="than">
+        <div class="hint-box" style="margin-bottom:16px">
+          <b>Quy tắc mã nhiệm vụ tự động:</b> Mỗi <b>Nguồn chỉ đạo</b> (nhóm nhiệm vụ) có một <b>Mã nhóm</b> riêng (ví dụ: <code>BT</code> cho Bí thư giao, <code>BTV</code> cho Ban Thường vụ giao, <code>CT</code> cho Chủ tịch UBND giao, <code>CTON</code> cho Cấp trên giao). Khi tạo nhiệm vụ mới theo nhóm, hệ thống tự sinh mã theo dạng <code>XA-[MÃ NHÓM]-[STT 4 CHỮ SỐ]</code> (ví dụ: <code>XA-BT-0001</code>, <code>XA-BT-0002</code>, <code>XA-BTV-0001</code>).
+        </div>
+
+        <div class="qt-grid">
+          <!-- Nguồn chỉ đạo (Nhóm nhiệm vụ) -->
+          <div class="qt-card">
+            <h3>1. Nguồn chỉ đạo / Nhóm nhiệm vụ (Có mã nhóm riêng)</h3>
+            <div class="qt-add">
+              <label class="o" style="width:110px"><span>Mã nhóm *</span>
+                <input type="text" id="qt-ng-ma" placeholder="VD: BT, BTV">
+              </label>
+              <label class="o grow"><span>Tên nguồn chỉ đạo *</span>
+                <input type="text" id="qt-ng-ten" placeholder="VD: Bí thư Đảng ủy giao">
+              </label>
+              <button type="button" class="btn chinh nho" id="btn-qt-ng-add">+ Thêm</button>
+            </div>
+            <ul class="qt-list" id="qt-list-nguon"></ul>
+          </div>
+
+          <!-- Lĩnh vực -->
+          <div class="qt-card">
+            <h3>2. Lĩnh vực chuyên môn</h3>
+            <div class="qt-add">
+              <label class="o grow"><span>Tên lĩnh vực *</span>
+                <input type="text" id="qt-lv-ten" placeholder="VD: Đất đai – GPMB">
+              </label>
+              <button type="button" class="btn chinh nho" id="btn-qt-lv-add">+ Thêm</button>
+            </div>
+            <ul class="qt-list" id="qt-list-lv"></ul>
+          </div>
+
+          <!-- Đơn vị chủ trì -->
+          <div class="qt-card">
+            <h3>3. Đơn vị / Bộ phận chủ trì</h3>
+            <div class="qt-add">
+              <label class="o grow"><span>Tên đơn vị / bộ phận *</span>
+                <input type="text" id="qt-dv-ten" placeholder="VD: Phòng Kinh tế">
+              </label>
+              <button type="button" class="btn chinh nho" id="btn-qt-dv-add">+ Thêm</button>
+            </div>
+            <ul class="qt-list" id="qt-list-dv"></ul>
+          </div>
+
+          <!-- Cán bộ theo dõi -->
+          <div class="qt-card">
+            <h3>4. Cán bộ / Công chức theo dõi</h3>
+            <div class="qt-add">
+              <label class="o grow"><span>Họ tên / Chức danh theo dõi *</span>
+                <input type="text" id="qt-cv-ten" placeholder="VD: Nguyễn Văn A – CV Văn phòng">
+              </label>
+              <button type="button" class="btn chinh nho" id="btn-qt-cv-add">+ Thêm</button>
+            </div>
+            <ul class="qt-list" id="qt-list-cv"></ul>
+          </div>
+
+          <!-- Quản lý người dùng & phân quyền -->
+          <div class="qt-card full">
+            <h3>5. Quản lý tài khoản &amp; Phân quyền người dùng</h3>
+            <div class="qt-add">
+              <label class="o" style="min-width:160px"><span>Tên đăng nhập *</span>
+                <input type="text" id="qt-u-user" placeholder="VD: vanphong_xa">
+              </label>
+              <label class="o" style="min-width:180px"><span>Họ tên / Đơn vị *</span>
+                <input type="text" id="qt-u-name" placeholder="VD: Văn phòng Đảng ủy – UBND">
+              </label>
+              <label class="o" style="min-width:140px"><span>Mật khẩu *</span>
+                <input type="text" id="qt-u-pass" placeholder="Mật khẩu">
+              </label>
+              <label class="o" style="min-width:170px"><span>Vai trò</span>
+                <select id="qt-u-role">
+                  <option value="editor">Cán bộ cập nhật (Editor)</option>
+                  <option value="viewer">Lãnh đạo / Xem (Viewer)</option>
+                  <option value="admin">Quản trị viên (Admin)</option>
+                </select>
+              </label>
+              <label class="o" style="min-width:170px"><span>Đơn vị gắn kết</span>
+                <select id="qt-u-dv"><option value="">-- Tất cả đơn vị --</option></select>
+              </label>
+              <button type="button" class="btn chinh nho" id="btn-qt-u-add">+ Tạo tài khoản</button>
+            </div>
+            <ul class="qt-list" id="qt-list-users"></ul>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 6. NHẬT KÝ CẬP NHẬT -->
+  <section id="view-nhat-ky" hidden>
+    <article class="panel">
+      <header>
+        <h2>Nhật ký cập nhật tiến độ</h2>
+        <span class="chuthich">Ghi nhận các lần thay đổi trạng thái, tiến độ và văn bản căn cứ</span>
+      </header>
+      <div class="than">
+        <ul class="nk" id="ds-nhatky"></ul>
+      </div>
+    </article>
+  </section>
+</main>
+
+<!-- HỘP THOẠI CHI TIẾT / SỬA / THÊM NHIỆM VỤ -->
+<dialog id="dlg-nv">
+  <form method="dialog" id="form-nv">
+    <div class="dlg-dau">
+      <h2 id="dlg-nv-tieu-de">Chi tiết nhiệm vụ</h2>
+      <button type="button" class="btn nho" id="dlg-nv-dong">✕</button>
+    </div>
+    <div class="dlg-than">
+      <label class="o nua"><span>Nguồn chỉ đạo (Nhóm nhiệm vụ) *</span>
+        <select id="nv-ng"></select>
+      </label>
+      <label class="o"><span>Mã nhiệm vụ (Tự động hoặc tùy chỉnh)</span>
+        <input type="text" id="nv-ma" required placeholder="VD: XA-BT-0001">
+      </label>
+
+      <label class="o"><span>Trạng thái</span>
+        <select id="nv-tt">
+          <option value="Đang thực hiện">Đang thực hiện</option>
+          <option value="Đã hoàn thành">Đã hoàn thành</option>
+        </select>
+      </label>
+      <label class="o"><span>Tiến độ (%)</span><input type="number" id="nv-td" min="0" max="100" step="5" value="0"></label>
+      <label class="o"><span>Lĩnh vực</span>
+        <select id="nv-lv"></select>
+      </label>
+
+      <label class="o nua"><span>Bộ phận / Đơn vị chủ trì</span>
+        <select id="nv-dv"></select>
+      </label>
+      <label class="o nua col-cv"><span>Cán bộ theo dõi</span>
+        <select id="nv-cv"></select>
+      </label>
+
+      <label class="o nua"><span>Hạn hoàn thành (ngày)</span><input type="date" id="nv-han"></label>
+      <label class="o nua"><span>Ghi chú thời hạn gốc</span><input type="text" id="nv-hangoc" placeholder="VD: Trong tháng 12/2026 hoặc Thường xuyên"></label>
+
+      <label class="o nua"><span>Văn bản giao nhiệm vụ</span><input type="text" id="nv-vb" placeholder="VD: TB 12-TB/ĐU ngày 15/11/2026"></label>
+      <label class="o nua"><span>Định kỳ (nếu có)</span><input type="text" id="nv-dk" placeholder="VD: Hằng tuần / Hằng tháng"></label>
+
+      <label class="o day"><span>Nội dung nhiệm vụ *</span><textarea id="nv-nd" required></textarea></label>
+      <label class="o day"><span>Kết quả thực hiện / Vướng mắc hiện tại</span><textarea id="nv-kq"></textarea></label>
+      <label class="o day can-ghi"><span>Ghi chú cập nhật lần này (lưu vào lịch sử)</span><input type="text" id="nv-nd-ls" placeholder="VD: Đã họp dân, hoàn thành chi trả đợt 1..."></label>
+
+      <div class="ls" id="nv-lichsu"></div>
+    </div>
+    <div class="dlg-chan">
+      <div class="dan">
+        <button type="button" class="btn nho nguyhiem admin-only" id="nv-xoa">Xóa nhiệm vụ</button>
+      </div>
+      <button type="button" class="btn" id="nv-huy">Đóng</button>
+      <button type="submit" class="btn chinh can-ghi" id="nv-luu">Lưu thay đổi</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- HỘP THOẠI TÙY CHỈNH TÊN HỆ THỐNG -->
+<dialog id="dlg-cfg">
+  <form method="dialog" id="form-cfg">
+    <div class="dlg-dau">
+      <h2>Tùy chỉnh Tên Hệ thống &amp; Đơn vị cấp xã</h2>
+      <button type="button" class="btn nho" id="dlg-cfg-dong">✕</button>
+    </div>
+    <div class="dlg-than">
+      <label class="o day"><span>Tên hệ thống *</span>
+        <input type="text" id="cfg-in-ten" required placeholder="VD: Hệ thống Theo dõi Nhiệm vụ Đảng ủy – UBND xã Cửa Tùng">
+      </label>
+      <label class="o nua"><span>Tên cơ quan trên dải tiêu đề</span>
+        <input type="text" id="cfg-in-coquan" placeholder="VD: ĐẢNG ỦY – UBND XÃ CỬA TÙNG">
+      </label>
+      <label class="o nua"><span>Địa danh (hiển thị kèm ngày)</span>
+        <input type="text" id="cfg-in-diadanh" placeholder="VD: Xã Cửa Tùng">
+      </label>
+      <label class="o day"><span>Dòng tiêu ngữ / khẩu hiệu</span>
+        <input type="text" id="cfg-in-tieungu" placeholder="VD: Đoàn kết – Kỷ cương – Nêu gương – Phát triển">
+      </label>
+      <label class="o day"><span>Mô tả phụ đề</span>
+        <textarea id="cfg-in-phu" rows="2"></textarea>
+      </label>
+      <label class="o day"><span>URL Google Apps Script Web App (tùy chọn – kết nối Google Sheets)</span>
+        <input type="text" id="cfg-in-gas" placeholder="https://script.google.com/macros/s/.../exec">
+        <small>Để trống nếu chạy cục bộ; nhập URL Web App sau khi triển khai Google Apps Script để đồng bộ trực tiếp với Google Sheet.</small>
+      </label>
+    </div>
+    <div class="dlg-chan">
+      <div class="dan">
+        <button type="button" class="btn nho" id="cfg-mac-dinh">Khôi phục tên mặc định</button>
+      </div>
+      <button type="button" class="btn" id="cfg-huy">Hủy</button>
+      <button type="submit" class="btn chinh">Áp dụng tên hệ thống</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- HỘP THOẠI ĐĂNG NHẬP / PHÂN QUYỀN -->
+<dialog id="dlg-auth">
+  <form method="dialog" id="form-auth">
+    <div class="dlg-dau">
+      <h2>Đăng nhập &amp; Chuyển vai trò sử dụng</h2>
+      <button type="button" class="btn nho" id="dlg-auth-dong">✕</button>
+    </div>
+    <div class="dlg-than">
+      <div class="o day hint-box">
+        Tài khoản mẫu mặc định: <b>admin</b> / <code>admin123</code> (Quản trị cao nhất), <b>canbo</b> / <code>canbo123</code> (Cập nhật tiến độ), <b>lanhdao</b> / <code>xem123</code> (Chỉ xem/tra cứu). Admin có thể thêm/sửa/xóa tài khoản tại tab <b>Quản trị &amp; Danh mục</b>.
+      </div>
+      <label class="o nua"><span>Tên đăng nhập</span>
+        <input type="text" id="auth-user" required placeholder="VD: admin">
+      </label>
+      <label class="o nua"><span>Mật khẩu</span>
+        <input type="password" id="auth-pass" required placeholder="Nhập mật khẩu">
+      </label>
+    </div>
+    <div class="dlg-chan">
+      <div class="dan">
+        <span id="auth-current-info" style="font-size:0.88rem;color:var(--ink-2)"></span>
+      </div>
+      <button type="button" class="btn" id="auth-huy">Đóng</button>
+      <button type="submit" class="btn chinh">Đăng nhập</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="tip" id="bd-tip" hidden></div>
+<div class="thongbao" id="thongbao" hidden></div>
+
+<script>
+(() => {
+  const STORAGE_KEY = "QLNV_CAP_XA_V2_DATA";
+  const DEFAULT_CONFIG = {
+    tenHeThong: "Theo dõi Nhiệm vụ & Kết luận Chỉ đạo Cấp xã",
+    coQuan: "ĐẢNG ỦY – UBND XÃ",
+    tieuNgu: "Đoàn kết – Kỷ cương – Nêu gương – Phát triển",
+    diaDanh: "Xã Cửa Tùng",
+    phuDe: "Quản lý tiến độ nhiệm vụ cấp trên giao, nghị quyết – kết luận cấp xã, phân công cán bộ theo dõi và đôn đốc thực hiện.",
+    congKhai: false,
+    gasUrl: "",
+    fontScale: 1
+  };
+
+  const DEFAULT_CATALOG = {
+    nguon: [
+      { code: "BT", name: "Bí thư Đảng ủy giao" },
+      { code: "BTV", name: "Ban Thường vụ Đảng ủy giao" },
+      { code: "CT", name: "Chủ tịch UBND xã giao" },
+      { code: "CTON", name: "Cấp trên giao (Tỉnh / Khu vực)" }
+    ],
+    linhVuc: [
+      "Đất đai – GPMB",
+      "Đầu tư – Xây dựng",
+      "Tài chính – Ngân sách",
+      "Xây dựng Đảng & Hệ thống chính trị",
+      "Hành chính – Chuyển đổi số",
+      "Văn hóa – Xã hội – Giáo dục",
+      "An ninh – Quốc phòng"
+    ],
+    donVi: [
+      "Văn phòng Đảng ủy & HĐND-UBND",
+      "Phòng Kinh tế",
+      "Phòng Văn hóa – Xã hội",
+      "Công an xã",
+      "Ban Chỉ huy Quân sự xã",
+      "Ban QLDA / Tổ GPMB xã"
+    ],
+    cvTheoDoi: [
+      "Chánh Văn phòng",
+      "Công chức Địa chính – Xây dựng",
+      "Công chức Tài chính – Kế toán",
+      "Công chức Văn hóa – Xã hội",
+      "Công chức Tư pháp – Văn phòng"
+    ]
+  };
+
+  const DEFAULT_USERS = [
+    { username: "admin", name: "Quản trị viên hệ thống (Admin)", passwordHash: hashPass("admin123"), role: "admin", donVi: "" },
+    { username: "canbo", name: "Cán bộ tổng hợp & theo dõi", passwordHash: hashPass("canbo123"), role: "editor", donVi: "" },
+    { username: "lanhdao", name: "Lãnh đạo xem & đôn đốc", passwordHash: hashPass("xem123"), role: "viewer", donVi: "" }
+  ];
+
+  const SAMPLE_TASKS = [
+    {
+      id: "XA-CTON-0001", ma: "XA-CTON-0001",
+      linhVuc: "Đất đai – GPMB", nguon: "Cấp trên giao (Tỉnh / Khu vực)",
+      donVi: "Ban QLDA / Tổ GPMB xã", cvTheoDoi: "Công chức Địa chính – Xây dựng",
+      han: "2026-12-05", hanGoc: "Trước ngày 05/12/2026", dinhKy: "",
+      vanBan: "CV chỉ đạo GPMB tuyến hạ tầng",
+      noiDung: "Vận động, hoàn tất bàn giao mặt bằng phần diện tích còn lại và phối hợp chỉnh lý biến động đất đai phục vụ thi công tuyến đường.",
+      ketQua: "Đã bàn giao 98,6% chiều dài tuyến; còn 02 hộ đang tiếp tục đối thoại, giải thích chính sách hỗ trợ.",
+      trangThai: "Đang thực hiện", tienDo: 85,
+      taoLuc: "2026-10-10T08:00:00.000Z", capNhat: "2026-11-22T09:30:00.000Z",
+      lichSu: [{ luc: "2026-11-22T09:30:00.000Z", ttCu: "Đang thực hiện", tt: "Đang thực hiện", td: 85, nd: "Cập nhật tiến độ bàn giao mặt bằng và làm việc với 02 hộ còn lại.", vb: "BC tiến độ tuần", nguoi: "admin" }]
+    },
+    {
+      id: "XA-CT-0001", ma: "XA-CT-0001",
+      linhVuc: "Hành chính – Chuyển đổi số", nguon: "Chủ tịch UBND xã giao",
+      donVi: "Văn phòng Đảng ủy & HĐND-UBND", cvTheoDoi: "Công chức Tư pháp – Văn phòng",
+      han: "2026-11-20", hanGoc: "Trước ngày 20/11/2026", dinhKy: "",
+      vanBan: "KH 45/KH-UBND ngày 02/11/2026",
+      noiDung: "Số hóa 100% hồ sơ thủ tục hành chính phát sinh đúng hạn trên cổng dịch vụ công và hướng dẫn người dân sử dụng định danh điện tử.",
+      ketQua: "Đạt 82% hồ sơ số hóa; còn một số hồ sơ hộ tịch cũ cần đối chiếu sổ gốc.",
+      trangThai: "Đang thực hiện", tienDo: 80,
+      taoLuc: "2026-11-02T07:30:00.000Z", capNhat: "2026-11-21T14:15:00.000Z",
+      lichSu: [{ luc: "2026-11-21T14:15:00.000Z", ttCu: "Đang thực hiện", tt: "Đang thực hiện", td: 80, nd: "Đã tổ chức 02 đợt hỗ trợ lưu động tại các thôn.", vb: "", nguoi: "admin" }]
+    },
+    {
+      id: "XA-CT-0002", ma: "XA-CT-0002",
+      linhVuc: "Tài chính – Ngân sách", nguon: "Chủ tịch UBND xã giao",
+      donVi: "Phòng Kinh tế", cvTheoDoi: "Công chức Tài chính – Kế toán",
+      han: "2026-11-30", hanGoc: "Trong tháng 11/2026", dinhKy: "Hằng tháng",
+      vanBan: "TB kết luận giao ban kinh tế tháng 11",
+      noiDung: "Rà soát tiến độ giải ngân vốn đầu tư công và thu ngân sách trên địa bàn xã năm 2026, đề xuất điều chuyển vốn các hạng mục chậm.",
+      ketQua: "Đã tổng hợp số liệu đến 20/11/2026, chuẩn bị tờ trình điều chỉnh dự toán.",
+      trangThai: "Đang thực hiện", tienDo: 65,
+      taoLuc: "2026-11-01T08:00:00.000Z", capNhat: "2026-11-24T10:00:00.000Z",
+      lichSu: []
+    },
+    {
+      id: "XA-BT-0001", ma: "XA-BT-0001",
+      linhVuc: "An ninh – Quốc phòng", nguon: "Bí thư Đảng ủy giao",
+      donVi: "Công an xã", cvTheoDoi: "Chánh Văn phòng",
+      han: "2026-10-31", hanGoc: "Trong tháng 10/2026", dinhKy: "",
+      vanBan: "NQ 18-NQ/ĐU ngày 12/10/2026",
+      noiDung: "Bảo đảm an ninh trật tự, an toàn giao thông và phòng chống cháy nổ tại các khu vực đông dân cư, bến bãi và khu tái định cư.",
+      ketQua: "Duy trì tuần tra khép kín, không để phát sinh điểm nóng phức tạp về an ninh trật tự.",
+      trangThai: "Đã hoàn thành", tienDo: 100,
+      taoLuc: "2026-10-12T08:00:00.000Z", capNhat: "2026-10-30T16:20:00.000Z",
+      lichSu: [{ luc: "2026-10-30T16:20:00.000Z", ttCu: "Đang thực hiện", tt: "Đã hoàn thành", td: 100, nd: "Hoàn thành chỉ tiêu đợt cao điểm tháng 10.", vb: "BC tháng 10", nguoi: "admin" }]
+    },
+    {
+      id: "XA-BTV-0001", ma: "XA-BTV-0001",
+      linhVuc: "Văn hóa – Xã hội – Giáo dục", nguon: "Ban Thường vụ Đảng ủy giao",
+      donVi: "Phòng Văn hóa – Xã hội", cvTheoDoi: "Công chức Văn hóa – Xã hội",
+      han: "2026-12-20", hanGoc: "Trước ngày 20/12/2026", dinhKy: "",
+      vanBan: "KH 52/KH-UBND ngày 10/11/2026",
+      noiDung: "Rà soát hộ nghèo, hộ cận nghèo cuối năm 2026 và thăm hỏi, hỗ trợ các gia đình chính sách, hộ khó khăn trước mùa mưa rét.",
+      ketQua: "Đã hoàn tất rà soát tại 100% thôn; đang lập danh sách trình hội đồng xét duyệt.",
+      trangThai: "Đang thực hiện", tienDo: 55,
+      taoLuc: "2026-11-10T08:00:00.000Z", capNhat: "2026-11-23T15:00:00.000Z",
+      lichSu: []
+    }
+  ];
+
+  function hashPass(p) {
+    let h = 2166136261;
+    for (let i = 0; i < p.length; i++) {
+      h ^= p.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return "h_" + (h >>> 0).toString(16);
+  }
+
+  let state = loadState();
+  let tqFilter = { linhVuc: "", nguon: "", donVi: "", cvTheoDoi: "", thang: "" };
+  let tkGroupBy = "donVi";
+  let editingId = null;
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.tasks)) {
+          return {
+            config: { ...DEFAULT_CONFIG, ...(parsed.config || {}) },
+            catalog: {
+              nguon: Array.isArray(parsed.catalog?.nguon) && parsed.catalog.nguon.length ? parsed.catalog.nguon : structuredClone(DEFAULT_CATALOG.nguon),
+              linhVuc: Array.isArray(parsed.catalog?.linhVuc) && parsed.catalog.linhVuc.length ? parsed.catalog.linhVuc : [...DEFAULT_CATALOG.linhVuc],
+              donVi: Array.isArray(parsed.catalog?.donVi) && parsed.catalog.donVi.length ? parsed.catalog.donVi : [...DEFAULT_CATALOG.donVi],
+              cvTheoDoi: Array.isArray(parsed.catalog?.cvTheoDoi) && parsed.catalog.cvTheoDoi.length ? parsed.catalog.cvTheoDoi : [...DEFAULT_CATALOG.cvTheoDoi]
+            },
+            users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : structuredClone(DEFAULT_USERS),
+            currentUser: parsed.currentUser || DEFAULT_USERS[0].username,
+            tasks: parsed.tasks
+          };
+        }
+      }
+    } catch (_) {}
+    return {
+      config: { ...DEFAULT_CONFIG },
+      catalog: structuredClone(DEFAULT_CATALOG),
+      users: structuredClone(DEFAULT_USERS),
+      currentUser: "admin",
+      tasks: structuredClone(SAMPLE_TASKS)
+    };
+  }
+
+  function getCurrentUserObj() {
+    return state.users.find(u => u.username === state.currentUser) || state.users[0] || { username: "admin", name: "Admin", role: "admin" };
+  }
+
+  function isAdmin() {
+    return getCurrentUserObj().role === "admin";
+  }
+
+  function canWrite() {
+    const r = getCurrentUserObj().role;
+    return r === "admin" || r === "editor";
+  }
+
+  function saveState(msg = "Đã lưu", syncGas = true) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      setSaveStatus("ok", `${msg} · ${fmtTime(new Date().toISOString())}`);
+      if (syncGas && state.config.gasUrl) {
+        pushToGas();
+      }
+    } catch (e) {
+      setSaveStatus("loi", "Lỗi lưu trình duyệt");
+    }
+  }
+
+  async function pushToGas() {
+    if (!state.config.gasUrl) return;
+    setSaveStatus("sync", "Đang đồng bộ Google Sheet...");
+    try {
+      const res = await fetch(state.config.gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "syncAll",
+          actor: getCurrentUserObj().username,
+          payload: {
+            config: state.config,
+            catalog: state.catalog,
+            users: state.users,
+            tasks: state.tasks
+          }
+        })
+      });
+      const data = await res.json();
+      if (data && data.ok) {
+        setSaveStatus("ok", `Đã đồng bộ Sheet · ${fmtTime(new Date().toISOString())}`);
+      } else {
+        setSaveStatus("loi", "Sheet báo lỗi: " + (data?.error || "không rõ"));
+      }
+    } catch (err) {
+      setSaveStatus("loi", "Chưa kết nối được Google Sheet");
+    }
+  }
+
+  async function pullFromGas() {
+    if (!state.config.gasUrl) {
+      notify("Chưa cấu hình URL Google Apps Script. Hãy bấm 'Tên hệ thống' để dán URL.");
+      return;
+    }
+    setSaveStatus("sync", "Đang tải từ Google Sheet...");
+    try {
+      const sep = state.config.gasUrl.includes("?") ? "&" : "?";
+      const res = await fetch(`${state.config.gasUrl}${sep}action=getAll&_t=${Date.now()}`);
+      const data = await res.json();
+      if (data && data.ok && data.payload) {
+        const p = data.payload;
+        if (Array.isArray(p.tasks)) state.tasks = p.tasks;
+        if (p.catalog) state.catalog = { ...state.catalog, ...p.catalog };
+        if (Array.isArray(p.users) && p.users.length) state.users = p.users;
+        if (p.config) state.config = { ...state.config, ...p.config, gasUrl: state.config.gasUrl };
+        saveState("Đã tải từ Sheet", false);
+        renderAll();
+        notify("Đã đồng bộ dữ liệu mới nhất từ Google Sheet.");
+      } else {
+        setSaveStatus("loi", "Không đọc được dữ liệu Sheet");
+      }
+    } catch (e) {
+      setSaveStatus("loi", "Lỗi kết nối Google Sheet");
+      notify("Không thể tải từ Google Sheet. Kiểm tra quyền truy cập Web App.");
+    }
+  }
+
+  function setSaveStatus(kind, text) {
+    const el = document.getElementById("trang-thai-luu");
+    el.className = "dongbo " + kind;
+    document.getElementById("chu-luu").textContent = text;
+  }
+
+  function notify(msg) {
+    const el = document.getElementById("thongbao");
+    el.textContent = msg;
+    el.hidden = false;
+    clearTimeout(notify._t);
+    notify._t = setTimeout(() => { el.hidden = true; }, 3200);
+  }
+
+  function todayStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function fmtDate(isoDate) {
+    if (!isoDate) return "";
+    const parts = isoDate.slice(0, 10).split("-");
+    if (parts.length !== 3) return isoDate;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return "";
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" });
+  }
+
+  function diffDays(hanStr) {
+    if (!hanStr) return null;
+    const t = new Date(todayStr() + "T00:00:00");
+    const h = new Date(hanStr.slice(0, 10) + "T00:00:00");
+    return Math.round((h - t) / 86400000);
+  }
+
+  function getStatusKey(task) {
+    if (task.trangThai === "Đã hoàn thành") return "xong";
+    const d = diffDays(task.han);
+    if (d !== null && d < 0) return "quahan";
+    if (d !== null && d >= 0 && d <= 7) return "saphan";
+    return "dang";
+  }
+
+  function statusMeta(key) {
+    switch (key) {
+      case "xong": return { label: "Đã hoàn thành", cls: "xong", dot: "good" };
+      case "quahan": return { label: "Quá hạn", cls: "quahan", dot: "crit" };
+      case "saphan": return { label: "Sắp đến hạn", cls: "saphan", dot: "warn" };
+      default: return { label: "Đang thực hiện", cls: "dang", dot: "neutral" };
+    }
+  }
+
+  function esc(str) {
+    return String(str ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+
+  /* Sinh mã nhiệm vụ theo nhóm: VD XA-BT-0001, XA-BTV-0001 */
+  function getGroupCode(nguonName) {
+    const found = (state.catalog.nguon || []).find(g => g.name === nguonName);
+    if (found && found.code) return String(found.code).trim().toUpperCase();
+    const cleaned = String(nguonName || "NV").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, " ").trim();
+    const initials = cleaned.split(/\s+/).filter(Boolean).slice(0, 3).map(w => w[0]).join("").toUpperCase();
+    return initials || "NV";
+  }
+
+  function generateNextTaskCode(nguonName) {
+    const prefix = "XA";
+    const groupCode = getGroupCode(nguonName);
+    const base = `${prefix}-${groupCode}-`;
+    let maxSeq = 0;
+    state.tasks.forEach(t => {
+      const m = String(t.ma || "").trim().toUpperCase();
+      if (m.startsWith(base)) {
+        const rest = m.slice(base.length);
+        const num = parseInt(rest, 10);
+        if (!isNaN(num) && num > maxSeq) maxSeq = num;
+      }
+    });
+    return `${base}${String(maxSeq + 1).padStart(4, "0")}`;
+  }
+
+  function applyConfig() {
+    const c = state.config;
+    const scale = Number(c.fontScale || 1);
+    document.documentElement.style.setProperty("--font-scale", String(scale));
+    document.getElementById("btn-co-chu").textContent = `Cỡ chữ: ${Math.round(scale * 100)}%`;
+
+    document.title = c.tenHeThong || DEFAULT_CONFIG.tenHeThong;
+    document.getElementById("cfg-tenhethong").textContent = c.tenHeThong || DEFAULT_CONFIG.tenHeThong;
+    document.getElementById("cfg-coquan").textContent = c.coQuan || DEFAULT_CONFIG.coQuan;
+    document.getElementById("cfg-tieungu").textContent = c.tieuNgu || DEFAULT_CONFIG.tieuNgu;
+    document.getElementById("cfg-diadanh").textContent = c.diaDanh || DEFAULT_CONFIG.diaDanh;
+    document.getElementById("cfg-phude").textContent = c.phuDe || DEFAULT_CONFIG.phuDe;
+    document.body.dataset.congKhai = c.congKhai ? "1" : "0";
+    document.getElementById("btn-che-do").textContent = c.congKhai ? "Chế độ: Công khai" : "Chế độ: Làm việc";
+
+    const u = getCurrentUserObj();
+    document.body.dataset.role = u.role || "viewer";
+    const roleLabel = u.role === "admin" ? "Admin · Toàn quyền" : u.role === "editor" ? "Cán bộ · Cập nhật" : "Lãnh đạo · Chỉ xem";
+    document.getElementById("user-badge").textContent = `👤 ${u.username} (${roleLabel})`;
+
+    if (!isAdmin() && document.querySelector('.tab[data-tab="quan-tri"]')?.getAttribute("aria-selected") === "true") {
+      switchTab("tong-quan");
+    }
+  }
+
+  function populateSelects() {
+    const lvList = [...new Set([...state.catalog.linhVuc, ...state.tasks.map(t => t.linhVuc).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "vi"));
+    const ngList = [...new Set([...state.catalog.nguon.map(g => g.name), ...state.tasks.map(t => t.nguon).filter(Boolean)])];
+    const dvList = [...new Set([...state.catalog.donVi, ...state.tasks.map(t => t.donVi).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "vi"));
+    const cvList = [...new Set([...state.catalog.cvTheoDoi, ...state.tasks.map(t => t.cvTheoDoi).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "vi"));
+
+    const fill = (id, items, keepVal) => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const first = sel.options[0].outerHTML;
+      sel.innerHTML = first + items.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+      if (keepVal && [...sel.options].some(o => o.value === keepVal)) sel.value = keepVal;
+    };
+
+    fill("tq-loc-lv", lvList, tqFilter.linhVuc);
+    fill("tq-loc-ng", ngList, tqFilter.nguon);
+    fill("tq-loc-dv", dvList, tqFilter.donVi);
+    fill("tq-loc-cv", cvList, tqFilter.cvTheoDoi);
+
+    fill("f-lv", lvList, document.getElementById("f-lv").value);
+    fill("f-dv", dvList, document.getElementById("f-dv").value);
+    fill("f-ng", ngList, document.getElementById("f-ng").value);
+    fill("f-cv", cvList, document.getElementById("f-cv").value);
+
+    const fillPlain = (id, items, keepVal, allowBlank = false) => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const opts = allowBlank ? [`<option value="">-- Chọn --</option>`] : [];
+      items.forEach(v => opts.push(`<option value="${esc(v)}">${esc(v)}</option>`));
+      if (keepVal && !items.includes(keepVal) && keepVal !== "") {
+        opts.push(`<option value="${esc(keepVal)}">${esc(keepVal)}</option>`);
+      }
+      sel.innerHTML = opts.join("");
+      if (keepVal !== undefined && [...sel.options].some(o => o.value === keepVal)) sel.value = keepVal;
+    };
+
+    fillPlain("nv-ng", ngList, document.getElementById("nv-ng").value, false);
+    fillPlain("nv-lv", lvList, document.getElementById("nv-lv").value, true);
+    fillPlain("nv-dv", dvList, document.getElementById("nv-dv").value, true);
+    fillPlain("nv-cv", cvList, document.getElementById("nv-cv").value, true);
+    fillPlain("qt-u-dv", dvList, document.getElementById("qt-u-dv").value, true);
+  }
+
+  function getTqTasks() {
+    return state.tasks.filter(t => {
+      if (tqFilter.linhVuc && t.linhVuc !== tqFilter.linhVuc) return false;
+      if (tqFilter.nguon && t.nguon !== tqFilter.nguon) return false;
+      if (tqFilter.donVi && t.donVi !== tqFilter.donVi) return false;
+      if (tqFilter.cvTheoDoi && t.cvTheoDoi !== tqFilter.cvTheoDoi) return false;
+      if (tqFilter.thang && !(t.han || "").startsWith(tqFilter.thang)) return false;
+      return true;
+    });
+  }
+
+  function renderAll() {
+    document.getElementById("ngay-hom-nay").textContent = "ngày " + fmtDate(todayStr());
+    applyConfig();
+    populateSelects();
+
+    const all = state.tasks;
+    const overAll = all.filter(t => getStatusKey(t) === "quahan");
+    document.getElementById("dem-tatca").textContent = all.length;
+
+    const cb = document.getElementById("d-canhbao");
+    if (overAll.length > 0 && !state.config.congKhai) {
+      cb.hidden = false;
+      cb.className = "canhbao co";
+      document.getElementById("d-canhbao-nd").innerHTML = `Hiện có <b>${overAll.length} nhiệm vụ quá hạn xử lý</b> cần rà soát và đôn đốc kịp thời.`;
+    } else {
+      cb.hidden = true;
+    }
+
+    renderDashboard();
+    renderList();
+    renderAssignment();
+    if (isAdmin()) renderAdminPanel();
+    renderLogs();
+  }
+
+  function renderDashboard() {
+    const list = getTqTasks();
+    const counts = { quahan: 0, saphan: 0, dang: 0, xong: 0 };
+    list.forEach(t => counts[getStatusKey(t)]++);
+
+    const total = list.length;
+    const khanCount = counts.quahan + counts.saphan;
+    const parts = [
+      tqFilter.linhVuc && `Lĩnh vực: ${tqFilter.linhVuc}`,
+      tqFilter.nguon && `Nguồn: ${tqFilter.nguon}`,
+      tqFilter.donVi && `Bộ phận: ${tqFilter.donVi}`,
+      tqFilter.cvTheoDoi && `Cán bộ: ${tqFilter.cvTheoDoi}`,
+      tqFilter.thang && `Tháng hạn: ${tqFilter.thang}`
+    ].filter(Boolean);
+    document.getElementById("tq-phu").textContent = parts.length ? `Đang lọc theo · ${parts.join(" · ")}` : `Toàn bộ nhiệm vụ trên địa bàn (${total} nhiệm vụ)`;
+
+    const hero = document.getElementById("hero-dondoc");
+    hero.className = "hero c4 " + (counts.quahan > 0 ? "crit" : counts.saphan > 0 ? "warn" : "good");
+    document.getElementById("hero-so").textContent = khanCount;
+    document.getElementById("hero-loi").textContent = counts.quahan > 0
+      ? `Có ${counts.quahan} nhiệm vụ quá hạn và ${counts.saphan} nhiệm vụ sắp đến hạn trong 7 ngày.`
+      : counts.saphan > 0
+      ? `Không có nhiệm vụ quá hạn; có ${counts.saphan} nhiệm vụ sắp đến hạn trong 7 ngày.`
+      : "Tiến độ các nhiệm vụ đang được kiểm soát tốt, không có quá hạn hay sắp hạn.";
+
+    document.getElementById("hero-muc").innerHTML = `
+      <button type="button" class="hang" data-goto-tt="quahan">
+        <i class="cham crit"></i>
+        <div><b>${counts.quahan}</b><small>Nhiệm vụ quá hạn</small></div>
+        <span class="mui">→</span>
+      </button>
+      <button type="button" class="hang" data-goto-tt="saphan">
+        <i class="cham warn"></i>
+        <div><b>${counts.saphan}</b><small>Sắp đến hạn (≤ 7 ngày)</small></div>
+        <span class="mui">→</span>
+      </button>
+    `;
+
+    document.getElementById("toan-tong").textContent = total;
+    const pctXong = total ? Math.round((counts.xong / total) * 100) : 0;
+    document.getElementById("toan-tyle").textContent = `${counts.xong} hoàn thành (${pctXong}%)`;
+    document.getElementById("toan-chuthich").textContent = `Cập nhật ${fmtDate(todayStr())}`;
+
+    const pb = document.getElementById("toan-phanbo");
+    if (!total) {
+      pb.className = "phanbo rong";
+      pb.innerHTML = "";
+    } else {
+      pb.className = "phanbo";
+      pb.innerHTML = [
+        ["good", counts.xong],
+        ["neutral", counts.dang],
+        ["warn", counts.saphan],
+        ["crit", counts.quahan]
+      ].filter(([, v]) => v > 0).map(([cls, v]) => `<i class="${cls}" style="flex:${v}"></i>`).join("");
+    }
+
+    const kpis = [
+      { key: "xong", name: "Hoàn thành", dot: "good", val: counts.xong },
+      { key: "dang", name: "Đang làm", dot: "neutral", val: counts.dang },
+      { key: "saphan", name: "Sắp hạn", dot: "warn", val: counts.saphan },
+      { key: "quahan", name: "Quá hạn", dot: "crit", val: counts.quahan }
+    ];
+    document.getElementById("toan-kpi").innerHTML = kpis.map(k => `
+      <button type="button" data-goto-tt="${k.key}">
+        <span class="ten"><i class="cham ${k.dot}"></i>${k.name}</span>
+        <span class="so num">${k.val}</span>
+        <span class="them num">${total ? Math.round((k.val / total) * 100) : 0}%</span>
+      </button>
+    `).join("");
+
+    const coHan = list.filter(t => t.han && t.trangThai !== "Đã hoàn thành").sort((a, b) => a.han.localeCompare(b.han));
+    const khongHan = list.filter(t => !t.han && t.trangThai !== "Đã hoàn thành").length;
+    const hanGan = coHan[0];
+    document.getElementById("toan-sukien").innerHTML = `
+      <span>Hạn gần nhất: <b>${hanGan ? `${fmtDate(hanGan.han)} (${esc(hanGan.ma)})` : "Không có"}</b></span>
+      <span>Chưa ấn định hạn: <b>${khongHan}</b></span>
+      ${tqFilter.thang ? `<button type="button" id="clear-thang-filter">Bỏ lọc tháng ${esc(tqFilter.thang)}</button>` : ""}
+    `;
+
+    const overList = list.filter(t => getStatusKey(t) === "quahan").sort((a, b) => (a.han || "").localeCompare(b.han || "")).slice(0, 6);
+    const soonList = list.filter(t => getStatusKey(t) === "saphan").sort((a, b) => (a.han || "").localeCompare(b.han || "")).slice(0, 6);
+
+    const renderMiniList = (ulId, items, emptyText) => {
+      const ul = document.getElementById(ulId);
+      if (!items.length) {
+        ul.innerHTML = `<li class="trong">${esc(emptyText)}</li>`;
+        return;
+      }
+      ul.innerHTML = items.map(t => {
+        const d = diffDays(t.han);
+        const sub = d < 0 ? `Quá ${Math.abs(d)} ngày` : d === 0 ? "Hôm nay" : `Còn ${d} ngày`;
+        return `<li>
+          <button type="button" data-open-id="${esc(t.id)}">
+            <span class="ngay num">${fmtDate(t.han) || "Không hạn"}<small>${sub}</small></span>
+            <span class="nd"><b>${esc(t.ma)}</b> – ${esc(t.noiDung)}</span>
+            <span class="dv">${esc(t.donVi || "Chưa giao bộ phận")}</span>
+          </button>
+        </li>`;
+      }).join("");
+    };
+    renderMiniList("ds-quahan", overList, "Không có nhiệm vụ quá hạn.");
+    renderMiniList("ds-saphan", soonList, "Không có nhiệm vụ sắp đến hạn trong 7 ngày.");
+
+    renderMonthChart(list);
+    renderRecentUpdates(list);
+    renderStatsTable(list);
+  }
+
+  function renderMonthChart(list) {
+    const months = ["2026-09", "2026-10", "2026-11", "2026-12", "2027-01", "2027-02"];
+    const curM = todayStr().slice(0, 7);
+    const rows = months.map(m => {
+      const items = list.filter(t => (t.han || "").startsWith(m));
+      const c = { quahan: 0, saphan: 0, dang: 0, xong: 0 };
+      items.forEach(t => c[getStatusKey(t)]++);
+      return { m, total: items.length, ...c };
+    });
+    const maxV = Math.max(1, ...rows.map(r => r.total));
+    const ticks = [maxV, Math.ceil(maxV / 2), 0];
+    const hPx = 220;
+
+    document.getElementById("bd-thang").innerHTML = `
+      <div class="bd-truc">${ticks.map(v => `<span style="bottom:${(v / maxV) * 100}%">${v}</span>`).join("")}</div>
+      <div class="bd-ve">
+        ${[0, 50, 100].map(p => `<i style="bottom:${p}%"></i>`).join("")}
+        <div class="bd-cot">
+          ${rows.map(r => {
+            const barH = r.total ? Math.max(18, Math.round((r.total / maxV) * (hPx - 26))) : 0;
+            const segs = [
+              ["xong", r.xong, "good"],
+              ["dang", r.dang, "neutral"],
+              ["saphan", r.saphan, "warn"],
+              ["quahan", r.quahan, "crit"]
+            ].filter(([, n]) => n > 0).map(([, n, cls]) => `<i class="${cls}" style="flex:${n}"></i>`).join("");
+            return `<button type="button" class="bcot" data-month="${r.m}"
+              data-tip-title="Tháng ${r.m.split("-")[1]}/${r.m.split("-")[0]} (${r.total} NV)"
+              data-tip-q="${r.quahan}" data-tip-s="${r.saphan}" data-tip-d="${r.dang}" data-tip-x="${r.xong}">
+              <span class="gt num">${r.total || ""}</span>
+              <span class="chong" style="height:${barH}px">${segs}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      </div>
+      <div class="bd-nhan">
+        ${rows.map(r => {
+          const [y, m] = r.m.split("-");
+          return `<span class="${r.m === curM ? "nay" : ""}">T${m}/${y.slice(2)}<small>${r.m === curM ? "Hiện tại" : ""}</small></span>`;
+        }).join("")}
+      </div>
+    `;
+
+    document.getElementById("bd-bang").innerHTML = `
+      <table>
+        <thead><tr><th>Tháng hạn</th><th>Tổng</th><th>Quá hạn</th><th>Sắp hạn</th><th>Đang làm</th><th>Hoàn thành</th></tr></thead>
+        <tbody>
+          ${rows.map(r => `<tr>
+            <td><button type="button" class="lienket" data-month="${r.m}">Tháng ${r.m.split("-")[1]}/${r.m.split("-")[0]}</button></td>
+            <td>${r.total}</td><td>${r.quahan}</td><td>${r.saphan}</td><td>${r.dang}</td><td>${r.xong}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderRecentUpdates(list) {
+    const sorted = [...list].sort((a, b) => (b.capNhat || b.taoLuc || "").localeCompare(a.capNhat || a.taoLuc || "")).slice(0, 6);
+    const ol = document.getElementById("ds-moi");
+    if (!sorted.length) {
+      ol.innerHTML = `<li><p class="trong">Chưa có cập nhật nào.</p></li>`;
+      return;
+    }
+    ol.innerHTML = sorted.map(t => {
+      const st = statusMeta(getStatusKey(t));
+      return `<li>
+        <div class="dong1">
+          <button type="button" class="ma" data-open-id="${esc(t.id)}">${esc(t.ma)}</button>
+          <span class="pill ${st.cls}"><i class="cham ${st.dot}"></i>${st.label} · ${t.tienDo || 0}%</span>
+          <time class="num">${fmtTime(t.capNhat || t.taoLuc)}</time>
+        </div>
+        <p>${esc(t.ketQua || t.noiDung)}</p>
+        <div class="tthai"><span class="nguonvb">${esc(t.donVi || "")}${t.vanBan ? " · " + esc(t.vanBan) : ""}</span></div>
+      </li>`;
+    }).join("");
+  }
+
+  function renderStatsTable(list) {
+    const map = new Map();
+    list.forEach(t => {
+      const key = (t[tkGroupBy] || "").trim() || "Chưa phân loại";
+      if (!map.has(key)) map.set(key, { name: key, total: 0, xong: 0, dang: 0, saphan: 0, quahan: 0 });
+      const row = map.get(key);
+      row.total++;
+      row[getStatusKey(t)]++;
+    });
+    const rows = [...map.values()].sort((a, b) => b.quahan - a.quahan || b.total - a.total || a.name.localeCompare(b.name, "vi"));
+    const tbl = document.getElementById("bang-thongke");
+    tbl.innerHTML = `
+      <thead><tr><th>Đầu mối</th><th>Phân bố</th><th>Tổng</th><th>Hoàn thành</th><th>Đang làm</th><th>Sắp hạn</th><th>Quá hạn</th></tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr>
+          <td><b>${esc(r.name)}</b></td>
+          <td class="thanh"><div class="thanhchong">
+            ${r.xong ? `<i class="good" style="flex:${r.xong}"></i>` : ""}
+            ${r.dang ? `<i class="neutral" style="flex:${r.dang}"></i>` : ""}
+            ${r.saphan ? `<i class="warn" style="flex:${r.saphan}"></i>` : ""}
+            ${r.quahan ? `<i class="crit" style="flex:${r.quahan}"></i>` : ""}
+          </div></td>
+          <td><b>${r.total}</b></td><td>${r.xong}</td><td>${r.dang}</td><td>${r.saphan}</td><td>${r.quahan}</td>
+        </tr>`).join("")}
+      </tbody>
+    `;
+  }
+
+  function getFilteredTasks() {
+    const q = document.getElementById("f-q").value.trim().toLowerCase();
+    const tt = document.getElementById("f-tt").value;
+    const lv = document.getElementById("f-lv").value;
+    const dv = document.getElementById("f-dv").value;
+    const ng = document.getElementById("f-ng").value;
+    const cv = document.getElementById("f-cv").value;
+    const tu = document.getElementById("f-tu").value;
+    const den = document.getElementById("f-den").value;
+    const th = document.getElementById("f-thang").value;
+    const sort = document.getElementById("f-sort").value;
+
+    const arr = state.tasks.filter(t => {
+      if (tt && getStatusKey(t) !== tt) return false;
+      if (lv && t.linhVuc !== lv) return false;
+      if (dv && t.donVi !== dv) return false;
+      if (ng && t.nguon !== ng) return false;
+      if (cv && t.cvTheoDoi !== cv) return false;
+      if (tu && (!t.han || t.han < tu)) return false;
+      if (den && (!t.han || t.han > den)) return false;
+      if (th && !(t.han || "").startsWith(th)) return false;
+      if (q) {
+        const hay = [t.ma, t.noiDung, t.ketQua, t.donVi, t.cvTheoDoi, t.vanBan, t.linhVuc, t.nguon].join(" ").toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    arr.sort((a, b) => {
+      if (sort === "capnhat") return (b.capNhat || "").localeCompare(a.capNhat || "");
+      if (sort === "tiendo") return (a.tienDo || 0) - (b.tienDo || 0);
+      if (sort === "ma") return (a.ma || "").localeCompare(b.ma || "", "vi");
+      return (a.han || "9999-12-31").localeCompare(b.han || "9999-12-31");
+    });
+    return arr;
+  }
+
+  function renderList() {
+    const items = getFilteredTasks();
+    document.getElementById("f-dem").textContent = `${items.length} nhiệm vụ`;
+    const tb = document.getElementById("ds-body");
+    if (!items.length) {
+      tb.innerHTML = `<tr><td colspan="7" class="trong">Không có nhiệm vụ nào khớp bộ lọc hiện tại.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = items.map(t => {
+      const st = statusMeta(getStatusKey(t));
+      return `<tr data-open-id="${esc(t.id)}">
+        <td class="c-ma"><button type="button" class="ma" data-open-id="${esc(t.id)}">${esc(t.ma)}</button><small>${esc(t.linhVuc || "")}</small></td>
+        <td class="c-nd"><div class="nd">${esc(t.noiDung)}</div>${t.ketQua ? `<small>KQ: ${esc(t.ketQua)}</small>` : ""}${t.vanBan ? `<small>VB: ${esc(t.vanBan)}</small>` : ""}</td>
+        <td class="c-dv">${esc(t.donVi || "—")}${t.nguon ? `<small>${esc(t.nguon)}</small>` : ""}</td>
+        <td class="col-cv">${esc(t.cvTheoDoi || "Chưa phân công")}</td>
+        <td class="c-han num">${fmtDate(t.han) || esc(t.hanGoc || "Chưa ấn định")}<small>Tiến độ: ${t.tienDo || 0}%</small></td>
+        <td class="c-tt"><span class="pill ${st.cls}"><i class="cham ${st.dot}"></i>${st.label}</span></td>
+        <td class="c-sua can-ghi"><button type="button" class="btn nho" data-open-id="${esc(t.id)}">Sửa</button></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function renderAssignment() {
+    const map = new Map();
+    state.tasks.forEach(t => {
+      const person = (t.cvTheoDoi || "").trim() || "Chưa phân công";
+      if (!map.has(person)) map.set(person, { person, total: 0, xong: 0, dang: 0, quahan: 0 });
+      const r = map.get(person);
+      r.total++;
+      const k = getStatusKey(t);
+      if (k === "xong") r.xong++;
+      else if (k === "quahan") r.quahan++;
+      else r.dang++;
+    });
+    const rows = [...map.values()].sort((a, b) => b.total - a.total);
+    document.getElementById("bang-pc").innerHTML = `
+      <thead><tr><th>Cán bộ / Công chức theo dõi</th><th class="so">Tổng</th><th class="so">Hoàn thành</th><th class="so">Đang làm</th><th class="so">Quá hạn</th></tr></thead>
+      <tbody>${rows.map(r => `<tr>
+        <td><b>${esc(r.person)}</b></td>
+        <td class="so"><b>${r.total}</b></td>
+        <td class="so">${r.xong}</td>
+        <td class="so">${r.dang}</td>
+        <td class="so">${r.quahan}</td>
+      </tr>`).join("")}</tbody>
+    `;
+
+    const allCvs = [...new Set([...state.catalog.cvTheoDoi, ...state.tasks.map(t => t.cvTheoDoi).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "vi"));
+    const disabledAttr = canWrite() ? "" : "disabled";
+    document.getElementById("luoi-pc").innerHTML = state.tasks.map(t => `
+      <label>
+        <span><b>${esc(t.ma)}</b> · ${esc(t.noiDung.slice(0, 72))}${t.noiDung.length > 72 ? "…" : ""}</span>
+        <select data-assign-id="${esc(t.id)}" ${disabledAttr}>
+          <option value="">-- Chưa phân công --</option>
+          ${allCvs.map(c => `<option value="${esc(c)}" ${t.cvTheoDoi === c ? "selected" : ""}>${esc(c)}</option>`).join("")}
+        </select>
+      </label>
+    `).join("");
+  }
+
+  function renderAdminPanel() {
+    if (!isAdmin()) return;
+
+    // 1. Nguồn chỉ đạo (Nhóm có mã riêng)
+    document.getElementById("qt-list-nguon").innerHTML = state.catalog.nguon.map((g, idx) => `
+      <li class="qt-item">
+        <div class="qt-item-info">
+          <span class="qt-item-title"><span class="pill admin-pill">Mã nhóm: ${esc(g.code)}</span> ${esc(g.name)}</span>
+          <span class="qt-item-sub">Mẫu mã nhiệm vụ: XA-${esc(g.code)}-0001</span>
+        </div>
+        <div class="qt-item-actions">
+          <button type="button" class="btn nho" data-act="edit-nguon" data-idx="${idx}">Sửa</button>
+          <button type="button" class="btn nho nguyhiem" data-act="del-nguon" data-idx="${idx}">Xóa</button>
+        </div>
+      </li>
+    `).join("");
+
+    const renderSimpleCat = (listId, arr, typeKey) => {
+      document.getElementById(listId).innerHTML = arr.map((val, idx) => `
+        <li class="qt-item">
+          <div class="qt-item-info"><span class="qt-item-title">${esc(val)}</span></div>
+          <div class="qt-item-actions">
+            <button type="button" class="btn nho" data-act="edit-simple" data-type="${typeKey}" data-idx="${idx}">Sửa</button>
+            <button type="button" class="btn nho nguyhiem" data-act="del-simple" data-type="${typeKey}" data-idx="${idx}">Xóa</button>
+          </div>
+        </li>
+      `).join("");
+    };
+
+    renderSimpleCat("qt-list-lv", state.catalog.linhVuc, "linhVuc");
+    renderSimpleCat("qt-list-dv", state.catalog.donVi, "donVi");
+    renderSimpleCat("qt-list-cv", state.catalog.cvTheoDoi, "cvTheoDoi");
+
+    // 5. Người dùng
+    const roleNames = { admin: "Admin (Toàn quyền)", editor: "Cán bộ cập nhật", viewer: "Lãnh đạo / Chỉ xem" };
+    document.getElementById("qt-list-users").innerHTML = state.users.map((u, idx) => `
+      <li class="qt-item">
+        <div class="qt-item-info">
+          <span class="qt-item-title">${esc(u.name)} <code>(${esc(u.username)})</code></span>
+          <span class="qt-item-sub">Vai trò: <b>${esc(roleNames[u.role] || u.role)}</b>${u.donVi ? ` · Đơn vị: ${esc(u.donVi)}` : ""}</span>
+        </div>
+        <div class="qt-item-actions">
+          <button type="button" class="btn nho" data-act="edit-user" data-idx="${idx}">Sửa vai trò / MK</button>
+          ${u.username !== "admin" ? `<button type="button" class="btn nho nguyhiem" data-act="del-user" data-idx="${idx}">Xóa</button>` : ""}
+        </div>
+      </li>
+    `).join("");
+  }
+
+  function renderLogs() {
+    const entries = [];
+    state.tasks.forEach(t => {
+      (t.lichSu || []).forEach(ls => {
+        entries.push({ luc: ls.luc || t.capNhat, ma: t.ma, id: t.id, tt: ls.tt || t.trangThai, td: ls.td ?? t.tienDo, nd: ls.nd || t.ketQua || "(Cập nhật thông tin)", vb: ls.vb || t.vanBan || "", nguoi: ls.nguoi || "" });
+      });
+      if ((!t.lichSu || !t.lichSu.length) && t.ketQua) {
+        entries.push({ luc: t.capNhat || t.taoLuc, ma: t.ma, id: t.id, tt: t.trangThai, td: t.tienDo, nd: t.ketQua, vb: t.vanBan || "", nguoi: "" });
+      }
+    });
+    entries.sort((a, b) => (b.luc || "").localeCompare(a.luc || ""));
+    const ul = document.getElementById("ds-nhatky");
+    if (!entries.length) {
+      ul.innerHTML = `<li><p class="trong">Chưa có nhật ký cập nhật.</p></li>`;
+      return;
+    }
+    ul.innerHTML = entries.slice(0, 80).map(e => `<li>
+      <time class="num">${fmtTime(e.luc)}</time>
+      <div>
+        <div class="dong1">
+          <button type="button" class="ma" data-open-id="${esc(e.id)}">${esc(e.ma)}</button>
+          <span class="pill dang">${esc(e.tt)} · ${e.td || 0}%</span>
+          ${e.nguoi ? `<span class="nguonvb">Bởi: <b>${esc(e.nguoi)}</b></span>` : ""}
+          ${e.vb ? `<span class="nguonvb">VB: ${esc(e.vb)}</span>` : ""}
+        </div>
+        <p>${esc(e.nd)}</p>
+      </div>
+    </li>`).join("");
+  }
+
+  function openTaskDialog(taskId = null) {
+    if (!taskId && !canWrite()) {
+      notify("Tài khoản hiện tại chỉ có quyền xem.");
+      return;
+    }
+    const dlg = document.getElementById("dlg-nv");
+    const task = taskId ? state.tasks.find(x => x.id === taskId) : null;
+    editingId = task ? task.id : null;
+
+    const defaultNguon = state.catalog.nguon[0]?.name || "Chủ tịch UBND xã giao";
+    const nguonVal = task ? (task.nguon || defaultNguon) : defaultNguon;
+
+    document.getElementById("dlg-nv-tieu-de").textContent = task ? `Nhiệm vụ ${task.ma}` : "Thêm nhiệm vụ mới";
+    document.getElementById("nv-ng").value = nguonVal;
+    document.getElementById("nv-ma").value = task ? task.ma : generateNextTaskCode(nguonVal);
+    document.getElementById("nv-tt").value = task ? (task.trangThai === "Đã hoàn thành" ? "Đã hoàn thành" : "Đang thực hiện") : "Đang thực hiện";
+    document.getElementById("nv-td").value = task ? (task.tienDo ?? 0) : 0;
+    document.getElementById("nv-lv").value = task ? (task.linhVuc || "") : (state.catalog.linhVuc[0] || "");
+    document.getElementById("nv-dv").value = task ? (task.donVi || "") : (state.catalog.donVi[0] || "");
+    document.getElementById("nv-cv").value = task ? (task.cvTheoDoi || "") : "";
+    document.getElementById("nv-han").value = task ? (task.han || "") : "";
+    document.getElementById("nv-hangoc").value = task ? (task.hanGoc || "") : "";
+    document.getElementById("nv-vb").value = task ? (task.vanBan || "") : "";
+    document.getElementById("nv-dk").value = task ? (task.dinhKy || "") : "";
+    document.getElementById("nv-nd").value = task ? (task.noiDung || "") : "";
+    document.getElementById("nv-kq").value = task ? (task.ketQua || "") : "";
+    document.getElementById("nv-nd-ls").value = "";
+    document.getElementById("nv-xoa").hidden = !task || !isAdmin();
+
+    const lsEl = document.getElementById("nv-lichsu");
+    if (task && Array.isArray(task.lichSu) && task.lichSu.length) {
+      lsEl.hidden = false;
+      lsEl.innerHTML = `<h3>Lịch sử cập nhật (${task.lichSu.length})</h3><ol>${
+        [...task.lichSu].reverse().map(item => `<li>
+          <time class="num">${fmtTime(item.luc)}</time> — <b>${esc(item.tt)}</b> (${item.td ?? 0}%)${item.nguoi ? ` · <i>${esc(item.nguoi)}</i>` : ""}
+          ${item.nd ? `<div>${esc(item.nd)}</div>` : ""}
+        </li>`).join("")
+      }</ol>`;
+    } else {
+      lsEl.hidden = true;
+      lsEl.innerHTML = "";
+    }
+
+    if (!dlg.open) dlg.showModal();
+  }
+
+  document.getElementById("nv-ng").addEventListener("change", (e) => {
+    if (!editingId) {
+      document.getElementById("nv-ma").value = generateNextTaskCode(e.target.value);
+    }
+  });
+
+  document.getElementById("form-nv").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!canWrite()) return;
+    const now = new Date().toISOString();
+    const actor = getCurrentUserObj().username;
+    const nguon = document.getElementById("nv-ng").value.trim();
+    const ma = document.getElementById("nv-ma").value.trim().toUpperCase() || generateNextTaskCode(nguon);
+    const noiDung = document.getElementById("nv-nd").value.trim();
+    if (!ma || !noiDung) return;
+
+    const trangThai = document.getElementById("nv-tt").value;
+    let tienDo = Math.max(0, Math.min(100, Number(document.getElementById("nv-td").value || 0)));
+    if (trangThai === "Đã hoàn thành" && tienDo < 100) tienDo = 100;
+    const ketQua = document.getElementById("nv-kq").value.trim();
+    const noteLs = document.getElementById("nv-nd-ls").value.trim();
+
+    if (editingId) {
+      const idx = state.tasks.findIndex(x => x.id === editingId);
+      if (idx > -1) {
+        const cur = state.tasks[idx];
+        const lichSu = Array.isArray(cur.lichSu) ? [...cur.lichSu] : [];
+        if (noteLs || cur.trangThai !== trangThai || cur.tienDo !== tienDo || cur.ketQua !== ketQua) {
+          lichSu.push({ luc: now, ttCu: cur.trangThai, tt: trangThai, td: tienDo, nd: noteLs || ketQua, vb: document.getElementById("nv-vb").value.trim(), nguoi: actor });
+        }
+        state.tasks[idx] = {
+          ...cur, ma, nguon, trangThai, tienDo, ketQua, noiDung, lichSu,
+          linhVuc: document.getElementById("nv-lv").value.trim(),
+          donVi: document.getElementById("nv-dv").value.trim(),
+          cvTheoDoi: document.getElementById("nv-cv").value.trim(),
+          han: document.getElementById("nv-han").value,
+          hanGoc: document.getElementById("nv-hangoc").value.trim(),
+          vanBan: document.getElementById("nv-vb").value.trim(),
+          dinhKy: document.getElementById("nv-dk").value.trim(),
+          capNhat: now
+        };
+      }
+    } else {
+      const id = "XA-" + Date.now();
+      state.tasks.unshift({
+        id, ma, nguon, trangThai, tienDo, ketQua, noiDung,
+        linhVuc: document.getElementById("nv-lv").value.trim(),
+        donVi: document.getElementById("nv-dv").value.trim(),
+        cvTheoDoi: document.getElementById("nv-cv").value.trim(),
+        han: document.getElementById("nv-han").value,
+        hanGoc: document.getElementById("nv-hangoc").value.trim(),
+        vanBan: document.getElementById("nv-vb").value.trim(),
+        dinhKy: document.getElementById("nv-dk").value.trim(),
+        taoLuc: now, capNhat: now,
+        lichSu: [{ luc: now, ttCu: "", tt: trangThai, td: tienDo, nd: noteLs || ketQua || "Tạo mới nhiệm vụ", vb: document.getElementById("nv-vb").value.trim(), nguoi: actor }]
+      });
+    }
+    saveState("Đã lưu nhiệm vụ");
+    document.getElementById("dlg-nv").close();
+    renderAll();
+    notify(`Đã lưu nhiệm vụ ${ma}.`);
+  });
+
+  document.getElementById("nv-xoa").addEventListener("click", () => {
+    if (!editingId || !isAdmin()) return;
+    if (!confirm("Xác nhận xóa nhiệm vụ này?")) return;
+    state.tasks = state.tasks.filter(x => x.id !== editingId);
+    saveState("Đã xóa nhiệm vụ");
+    document.getElementById("dlg-nv").close();
+    renderAll();
+    notify("Đã xóa nhiệm vụ.");
+  });
+
+  document.getElementById("dlg-nv-dong").addEventListener("click", () => document.getElementById("dlg-nv").close());
+  document.getElementById("nv-huy").addEventListener("click", () => document.getElementById("dlg-nv").close());
+
+  /* Hộp thoại đổi tên hệ thống & cấu hình GAS */
+  const dlgCfg = document.getElementById("dlg-cfg");
+  document.getElementById("btn-doi-ten").addEventListener("click", () => {
+    if (!isAdmin()) return;
+    document.getElementById("cfg-in-ten").value = state.config.tenHeThong || "";
+    document.getElementById("cfg-in-coquan").value = state.config.coQuan || "";
+    document.getElementById("cfg-in-diadanh").value = state.config.diaDanh || "";
+    document.getElementById("cfg-in-tieungu").value = state.config.tieuNgu || "";
+    document.getElementById("cfg-in-phu").value = state.config.phuDe || "";
+    document.getElementById("cfg-in-gas").value = state.config.gasUrl || "";
+    dlgCfg.showModal();
+  });
+  document.getElementById("dlg-cfg-dong").addEventListener("click", () => dlgCfg.close());
+  document.getElementById("cfg-huy").addEventListener("click", () => dlgCfg.close());
+  document.getElementById("cfg-mac-dinh").addEventListener("click", () => {
+    document.getElementById("cfg-in-ten").value = DEFAULT_CONFIG.tenHeThong;
+    document.getElementById("cfg-in-coquan").value = DEFAULT_CONFIG.coQuan;
+    document.getElementById("cfg-in-diadanh").value = DEFAULT_CONFIG.diaDanh;
+    document.getElementById("cfg-in-tieungu").value = DEFAULT_CONFIG.tieuNgu;
+    document.getElementById("cfg-in-phu").value = DEFAULT_CONFIG.phuDe;
+  });
+  document.getElementById("form-cfg").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!isAdmin()) return;
+    state.config.tenHeThong = document.getElementById("cfg-in-ten").value.trim() || DEFAULT_CONFIG.tenHeThong;
+    state.config.coQuan = document.getElementById("cfg-in-coquan").value.trim() || DEFAULT_CONFIG.coQuan;
+    state.config.diaDanh = document.getElementById("cfg-in-diadanh").value.trim() || DEFAULT_CONFIG.diaDanh;
+    state.config.tieuNgu = document.getElementById("cfg-in-tieungu").value.trim() || DEFAULT_CONFIG.tieuNgu;
+    state.config.phuDe = document.getElementById("cfg-in-phu").value.trim() || DEFAULT_CONFIG.phuDe;
+    state.config.gasUrl = document.getElementById("cfg-in-gas").value.trim();
+    saveState("Đã cập nhật cấu hình");
+    dlgCfg.close();
+    applyConfig();
+    notify("Đã áp dụng cấu hình hệ thống.");
+  });
+
+  /* Hộp thoại đăng nhập / đổi vai trò */
+  const dlgAuth = document.getElementById("dlg-auth");
+  document.getElementById("btn-tai-khoan").addEventListener("click", () => {
+    const u = getCurrentUserObj();
+    document.getElementById("auth-user").value = u.username;
+    document.getElementById("auth-pass").value = "";
+    document.getElementById("auth-current-info").textContent = `Đang đăng nhập: ${u.name} (${u.username})`;
+    dlgAuth.showModal();
+  });
+  document.getElementById("dlg-auth-dong").addEventListener("click", () => dlgAuth.close());
+  document.getElementById("auth-huy").addEventListener("click", () => dlgAuth.close());
+  document.getElementById("form-auth").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const uname = document.getElementById("auth-user").value.trim();
+    const pass = document.getElementById("auth-pass").value;
+    const found = state.users.find(u => u.username === uname && u.passwordHash === hashPass(pass));
+    if (!found) {
+      notify("Sai tên đăng nhập hoặc mật khẩu.");
+      return;
+    }
+    state.currentUser = found.username;
+    saveState(`Đăng nhập ${found.username}`, false);
+    dlgAuth.close();
+    renderAll();
+    notify(`Xin chào ${found.name} (${found.role}).`);
+  });
+
+  /* Phóng to / thu nhỏ cỡ chữ cho lãnh đạo & thiết bị di động */
+  const FONT_STEPS = [1, 1.15, 1.3];
+  document.getElementById("btn-co-chu").addEventListener("click", () => {
+    const cur = Number(state.config.fontScale || 1);
+    const idx = FONT_STEPS.findIndex(s => Math.abs(s - cur) < 0.04);
+    const next = FONT_STEPS[(idx + 1) % FONT_STEPS.length];
+    state.config.fontScale = next;
+    saveState("Đã đổi cỡ chữ", false);
+    applyConfig();
+    notify(`Đã chỉnh cỡ chữ giao diện thành ${Math.round(next * 100)}%.`);
+  });
+
+  document.getElementById("btn-tai-lai").addEventListener("click", pullFromGas);
+
+  /* Quản trị danh mục & người dùng */
+  document.getElementById("btn-qt-ng-add").addEventListener("click", () => {
+    if (!isAdmin()) return;
+    const code = document.getElementById("qt-ng-ma").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const name = document.getElementById("qt-ng-ten").value.trim();
+    if (!code || !name) return notify("Vui lòng nhập đủ Mã nhóm và Tên nguồn chỉ đạo.");
+    if (state.catalog.nguon.some(g => g.code === code)) return notify(`Mã nhóm ${code} đã tồn tại.`);
+    state.catalog.nguon.push({ code, name });
+    document.getElementById("qt-ng-ma").value = "";
+    document.getElementById("qt-ng-ten").value = "";
+    saveState("Đã thêm nhóm chỉ đạo");
+    renderAll();
+    notify(`Đã thêm nhóm ${code} – ${name}.`);
+  });
+
+  const bindSimpleAdd = (btnId, inputId, catKey, label) => {
+    document.getElementById(btnId).addEventListener("click", () => {
+      if (!isAdmin()) return;
+      const val = document.getElementById(inputId).value.trim();
+      if (!val) return notify(`Vui lòng nhập ${label}.`);
+      if (state.catalog[catKey].includes(val)) return notify(`${val} đã có trong danh mục.`);
+      state.catalog[catKey].push(val);
+      document.getElementById(inputId).value = "";
+      saveState(`Đã thêm ${label}`);
+      renderAll();
+      notify(`Đã thêm ${label}: ${val}.`);
+    });
+  };
+  bindSimpleAdd("btn-qt-lv-add", "qt-lv-ten", "linhVuc", "lĩnh vực");
+  bindSimpleAdd("btn-qt-dv-add", "qt-dv-ten", "donVi", "đơn vị chủ trì");
+  bindSimpleAdd("btn-qt-cv-add", "qt-cv-ten", "cvTheoDoi", "cán bộ theo dõi");
+
+  document.getElementById("btn-qt-u-add").addEventListener("click", () => {
+    if (!isAdmin()) return;
+    const username = document.getElementById("qt-u-user").value.trim().toLowerCase();
+    const name = document.getElementById("qt-u-name").value.trim();
+    const pass = document.getElementById("qt-u-pass").value;
+    const role = document.getElementById("qt-u-role").value;
+    const donVi = document.getElementById("qt-u-dv").value;
+    if (!username || !name || !pass) return notify("Vui lòng nhập đầy đủ tên đăng nhập, họ tên và mật khẩu.");
+    if (state.users.some(u => u.username === username)) return notify("Tên đăng nhập đã tồn tại.");
+    state.users.push({ username, name, passwordHash: hashPass(pass), role, donVi });
+    document.getElementById("qt-u-user").value = "";
+    document.getElementById("qt-u-name").value = "";
+    document.getElementById("qt-u-pass").value = "";
+    saveState("Đã tạo tài khoản");
+    renderAll();
+    notify(`Đã tạo tài khoản ${username}.`);
+  });
+
+  document.getElementById("view-quan-tri").addEventListener("click", (e) => {
+    if (!isAdmin()) return;
+    const btn = e.target.closest("button[data-act]");
+    if (!btn) return;
+    const act = btn.dataset.act;
+    const idx = Number(btn.dataset.idx);
+
+    if (act === "edit-nguon") {
+      const g = state.catalog.nguon[idx];
+      if (!g) return;
+      const newCode = prompt("Sửa Mã nhóm (VD: BT, BTV, CT):", g.code);
+      if (newCode === null) return;
+      const newName = prompt("Sửa Tên nguồn chỉ đạo:", g.name);
+      if (newName === null) return;
+      const cClean = newCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const nClean = newName.trim();
+      if (cClean && nClean) {
+        const oldName = g.name;
+        g.code = cClean;
+        g.name = nClean;
+        state.tasks.forEach(t => { if (t.nguon === oldName) t.nguon = nClean; });
+        saveState("Đã cập nhật nhóm chỉ đạo");
+        renderAll();
+      }
+    } else if (act === "del-nguon") {
+      if (state.catalog.nguon.length <= 1) return notify("Cần giữ ít nhất 1 nguồn chỉ đạo.");
+      if (!confirm("Xóa nguồn chỉ đạo này?")) return;
+      state.catalog.nguon.splice(idx, 1);
+      saveState("Đã xóa nhóm chỉ đạo");
+      renderAll();
+    } else if (act === "edit-simple") {
+      const type = btn.dataset.type;
+      const arr = state.catalog[type];
+      const oldVal = arr[idx];
+      const nextVal = prompt("Nhập tên mới:", oldVal);
+      if (!nextVal || !nextVal.trim() || nextVal.trim() === oldVal) return;
+      const clean = nextVal.trim();
+      arr[idx] = clean;
+      state.tasks.forEach(t => { if (t[type] === oldVal) t[type] = clean; });
+      saveState("Đã cập nhật danh mục");
+      renderAll();
+    } else if (act === "del-simple") {
+      const type = btn.dataset.type;
+      if (!confirm("Xóa mục này khỏi danh mục?")) return;
+      state.catalog[type].splice(idx, 1);
+      saveState("Đã xóa khỏi danh mục");
+      renderAll();
+    } else if (act === "edit-user") {
+      const u = state.users[idx];
+      if (!u) return;
+      const nextRole = prompt("Nhập vai trò mới (admin / editor / viewer):", u.role);
+      if (!nextRole || !["admin", "editor", "viewer"].includes(nextRole.trim())) return;
+      const nextPass = prompt("Nhập mật khẩu mới (để trống nếu giữ nguyên):", "");
+      u.role = nextRole.trim();
+      if (nextPass && nextPass.trim()) u.passwordHash = hashPass(nextPass.trim());
+      saveState("Đã cập nhật người dùng");
+      renderAll();
+    } else if (act === "del-user") {
+      const u = state.users[idx];
+      if (!u || u.username === "admin") return;
+      if (!confirm(`Xóa tài khoản ${u.username}?`)) return;
+      state.users.splice(idx, 1);
+      saveState("Đã xóa tài khoản");
+      renderAll();
+    }
+  });
+
+  /* Chuyển tab */
+  function switchTab(tabName) {
+    if (tabName === "quan-tri" && !isAdmin()) return;
+    document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === tabName)));
+    ["tong-quan", "danh-sach", "phan-cong", "nhap-van-ban", "quan-tri", "nhat-ky"].forEach(name => {
+      const sec = document.getElementById("view-" + name);
+      if (sec) sec.hidden = name !== tabName;
+    });
+  }
+  document.querySelector(".tabs").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab");
+    if (btn && btn.dataset.tab) switchTab(btn.dataset.tab);
+  });
+
+  function jumpToList(opts = {}) {
+    if (opts.tt !== undefined) document.getElementById("f-tt").value = opts.tt;
+    if (opts.thang !== undefined) document.getElementById("f-thang").value = opts.thang;
+    renderList();
+    switchTab("danh-sach");
+  }
+
+  document.getElementById("view-tong-quan").addEventListener("click", (e) => {
+    const openBtn = e.target.closest("[data-open-id]");
+    if (openBtn) return openTaskDialog(openBtn.dataset.openId);
+
+    const ttBtn = e.target.closest("[data-goto-tt]");
+    if (ttBtn) return jumpToList({ tt: ttBtn.dataset.gotoTt });
+
+    const grpBtn = e.target.closest("[data-xem-nhom]");
+    if (grpBtn) return jumpToList({ tt: grpBtn.dataset.xemNhom });
+
+    const mBtn = e.target.closest("[data-month]");
+    if (mBtn) {
+      const m = mBtn.dataset.month;
+      tqFilter.thang = tqFilter.thang === m ? "" : m;
+      renderDashboard();
+      return;
+    }
+
+    if (e.target.id === "clear-thang-filter") {
+      tqFilter.thang = "";
+      renderDashboard();
+    }
+  });
+
+  document.getElementById("btn-loc-canhbao").addEventListener("click", () => jumpToList({ tt: "quahan" }));
+  document.getElementById("btn-them-nv").addEventListener("click", () => openTaskDialog(null));
+  document.getElementById("btn-them-nv-2").addEventListener("click", () => openTaskDialog(null));
+  document.getElementById("btn-che-do").addEventListener("click", () => {
+    state.config.congKhai = !state.config.congKhai;
+    saveState("Đã đổi chế độ", false);
+    renderAll();
+  });
+
+  ["tq-loc-lv", "tq-loc-ng", "tq-loc-dv", "tq-loc-cv"].forEach(id => {
+    document.getElementById(id).addEventListener("change", () => {
+      tqFilter.linhVuc = document.getElementById("tq-loc-lv").value;
+      tqFilter.nguon = document.getElementById("tq-loc-ng").value;
+      tqFilter.donVi = document.getElementById("tq-loc-dv").value;
+      tqFilter.cvTheoDoi = document.getElementById("tq-loc-cv").value;
+      renderDashboard();
+    });
+  });
+
+  document.querySelector(".chon").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-nhom]");
+    if (!b) return;
+    tkGroupBy = b.dataset.nhom;
+    document.querySelectorAll(".chon button[data-nhom]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    renderStatsTable(getTqTasks());
+  });
+
+  ["f-q", "f-tt", "f-lv", "f-dv", "f-ng", "f-cv", "f-sort", "f-tu", "f-den", "f-thang"].forEach(id => {
+    document.getElementById(id).addEventListener("input", renderList);
+    document.getElementById(id).addEventListener("change", renderList);
+  });
+  document.getElementById("f-reset").addEventListener("click", () => {
+    document.getElementById("form-loc").reset();
+    renderList();
+  });
+
+  document.getElementById("ds-body").addEventListener("click", (e) => {
+    const target = e.target.closest("[data-open-id]");
+    if (target) openTaskDialog(target.dataset.openId);
+  });
+  document.getElementById("ds-nhatky").addEventListener("click", (e) => {
+    const target = e.target.closest("[data-open-id]");
+    if (target) openTaskDialog(target.dataset.openId);
+  });
+
+  document.getElementById("luoi-pc").addEventListener("change", (e) => {
+    if (!canWrite()) return;
+    const sel = e.target.closest("select[data-assign-id]");
+    if (!sel) return;
+    const t = state.tasks.find(x => x.id === sel.dataset.assignId);
+    if (t) {
+      t.cvTheoDoi = sel.value;
+      t.capNhat = new Date().toISOString();
+      saveState("Đã phân công");
+      renderAll();
+      notify(`Đã phân công ${t.ma} cho ${sel.value || "chưa phân công"}.`);
+    }
+  });
+
+  /* Nhập văn bản / JSON */
+  document.getElementById("nhap-file").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const text = await file.text();
+    document.getElementById("nhap-text").value = text;
+    document.getElementById("nhap-tinhtrang").textContent = `Đã đọc tệp: ${file.name}`;
+  });
+
+  document.getElementById("btn-khoi-phuc-mau").addEventListener("click", () => {
+    if (!isAdmin()) return;
+    if (!confirm("Nạp lại bộ dữ liệu mẫu cấp xã hiện tại?")) return;
+    state.tasks = structuredClone(SAMPLE_TASKS);
+    saveState("Đã nạp dữ liệu mẫu");
+    renderAll();
+    notify("Đã nạp bộ dữ liệu mẫu cấp xã.");
+  });
+
+  document.getElementById("btn-tach-nhiemvu").addEventListener("click", () => {
+    if (!canWrite()) return notify("Tài khoản hiện tại không có quyền thêm nhiệm vụ.");
+    const raw = document.getElementById("nhap-text").value.trim();
+    const statusEl = document.getElementById("nhap-tinhtrang");
+    const box = document.getElementById("nhap-ketqua");
+    if (!raw) {
+      statusEl.className = "tinhtrang loi";
+      statusEl.textContent = "Vui lòng nhập nội dung văn bản hoặc JSON trước.";
+      return;
+    }
+
+    if (raw.startsWith("{") || raw.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(raw);
+        const importedTasks = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.tasks) ? parsed.tasks : null);
+        if (importedTasks) {
+          state.tasks = importedTasks;
+          if (parsed.config) state.config = { ...DEFAULT_CONFIG, ...parsed.config };
+          if (parsed.catalog) state.catalog = { ...state.catalog, ...parsed.catalog };
+          saveState("Đã nhập dữ liệu JSON");
+          renderAll();
+          statusEl.className = "tinhtrang";
+          statusEl.textContent = `Đã nhập thành công ${importedTasks.length} nhiệm vụ từ JSON.`;
+          box.innerHTML = "";
+          notify("Đã nhập dữ liệu JSON thành công.");
+          return;
+        }
+      } catch (_) {}
+    }
+
+    const lines = raw.split(/\n+/).map(s => s.trim()).filter(s => s.length >= 12);
+    if (!lines.length) {
+      statusEl.className = "tinhtrang loi";
+      statusEl.textContent = "Không tìm thấy đoạn/dòng nhiệm vụ đủ dài để tách.";
+      return;
+    }
+
+    const defNguon = state.catalog.nguon[0]?.name || "Chủ tịch UBND xã giao";
+    const defLv = state.catalog.linhVuc[0] || "Đất đai – GPMB";
+    const defDv = state.catalog.donVi[0] || "Phòng Kinh tế";
+
+    statusEl.className = "tinhtrang";
+    statusEl.textContent = `Đã tách ${lines.length} dòng đề xuất. Kiểm tra và nhấn "Lưu các nhiệm vụ đã chọn".`;
+
+    box.innerHTML = `
+      <div class="nhom">
+        <div class="dau">
+          <label class="o"><span>Văn bản nguồn chung</span><input type="text" id="dx-vb-chung" placeholder="VD: TB kết luận / Công văn số..."></label>
+          <label class="o"><span>Bộ phận chủ trì mặc định</span><input type="text" id="dx-dv-chung" value="${esc(defDv)}"></label>
+          <label class="o"><span>Lĩnh vực mặc định</span><input type="text" id="dx-lv-chung" value="${esc(defLv)}"></label>
+        </div>
+        ${lines.map((line, i) => `
+          <div class="dx">
+            <input type="checkbox" class="dx-chon" checked>
+            <div>
+              <label class="o"><span>Nội dung nhiệm vụ #${i + 1}</span>
+                <textarea class="dx-nd">${esc(line.replace(/^[-•*\d.)]+\s*/, ""))}</textarea>
+              </label>
+              <div class="o2">
+                <label class="o"><span>Bộ phận</span><input type="text" class="dx-dv" value="${esc(defDv)}"></label>
+                <label class="o"><span>Hạn xử lý</span><input type="date" class="dx-han"></label>
+                <label class="o"><span>Cán bộ theo dõi</span><input type="text" class="dx-cv" placeholder="Chưa phân công"></label>
+                <label class="o"><span>Nguồn chỉ đạo</span><input type="text" class="dx-ng" value="${esc(defNguon)}"></label>
+              </div>
+            </div>
+          </div>
+        `).join("")}
+        <div><button type="button" class="btn chinh" id="btn-luu-dexuat">Lưu các nhiệm vụ đã chọn</button></div>
+      </div>
+    `;
+
+    document.getElementById("btn-luu-dexuat").addEventListener("click", () => {
+      const vbChung = document.getElementById("dx-vb-chung").value.trim();
+      const dvChung = document.getElementById("dx-dv-chung").value.trim();
+      const lvChung = document.getElementById("dx-lv-chung").value.trim();
+      const now = new Date().toISOString();
+      const actor = getCurrentUserObj().username;
+      let added = 0;
+
+      box.querySelectorAll(".dx").forEach((card) => {
+        if (!card.querySelector(".dx-chon").checked) return;
+        const nd = card.querySelector(".dx-nd").value.trim();
+        if (!nd) return;
+        const ng = card.querySelector(".dx-ng").value.trim() || defNguon;
+        const ma = generateNextTaskCode(ng);
+        const taskObj = {
+          id: "XA-" + Date.now() + "-" + (added + 1),
+          ma,
+          noiDung: nd,
+          donVi: card.querySelector(".dx-dv").value.trim() || dvChung,
+          linhVuc: lvChung || defLv,
+          han: card.querySelector(".dx-han").value,
+          hanGoc: "",
+          cvTheoDoi: card.querySelector(".dx-cv").value.trim(),
+          nguon: ng,
+          vanBan: vbChung,
+          ketQua: "",
+          trangThai: "Đang thực hiện",
+          tienDo: 0,
+          taoLuc: now,
+          capNhat: now,
+          lichSu: [{ luc: now, ttCu: "", tt: "Đang thực hiện", td: 0, nd: "Nhập từ văn bản chỉ đạo", vb: vbChung, nguoi: actor }]
+        };
+        state.tasks.unshift(taskObj);
+        added++;
+      });
+
+      if (added > 0) {
+        saveState(`Đã thêm ${added} nhiệm vụ`);
+        renderAll();
+        box.innerHTML = "";
+        notify(`Đã thêm ${added} nhiệm vụ vào hệ thống.`);
+        switchTab("danh-sach");
+      }
+    });
+  });
+
+  /* Xuất báo cáo Word (.doc) & JSON */
+  document.querySelectorAll("[data-xuat]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const type = btn.dataset.xuat;
+      document.getElementById("menu-xuat").open = false;
+
+      if (type === "json") {
+        const blob = new Blob([JSON.stringify({ config: state.config, catalog: state.catalog, luuLuc: new Date().toISOString(), tasks: state.tasks }, null, 2)], { type: "application/json;charset=utf-8" });
+        downloadBlob(blob, `du-lieu-nhiem-vu-xa-${todayStr()}.json`);
+        notify("Đã tải tệp sao lưu JSON.");
+        return;
+      }
+
+      const items = type === "dondoc"
+        ? state.tasks.filter(t => getStatusKey(t) !== "xong")
+        : getFilteredTasks().length ? getFilteredTasks() : state.tasks;
+
+      const titleReport = type === "dondoc"
+        ? `BÁO CÁO ĐÔN ĐỐC NHIỆM VỤ CHƯA HOÀN THÀNH – ${state.config.tenHeThong.toUpperCase()}`
+        : `BÁO CÁO TỔNG HỢP TÌNH HÌNH THỰC HIỆN NHIỆM VỤ – ${state.config.tenHeThong.toUpperCase()}`;
+
+      const htmlDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+        body{font-family:"Times New Roman",serif;font-size:13pt;color:#111}
+        .head{text-align:center;margin-bottom:18px}
+        table{width:100%;border-collapse:collapse;font-size:11.5pt}
+        th,td{border:1px solid #444;padding:6px 8px;vertical-align:top;text-align:left}
+        th{background:#f2ece8}
+      </style></head><body>
+        <div class="head">
+          <div><b>${esc(state.config.coQuan)}</b></div>
+          <div>${esc(state.config.tieuNgu)}</div>
+          <p><i>${esc(state.config.diaDanh)}, ngày ${fmtDate(todayStr())}</i></p>
+          <h3>${esc(titleReport)}</h3>
+        </div>
+        <table>
+          <thead><tr><th>Mã</th><th>Nội dung nhiệm vụ</th><th>Bộ phận chủ trì</th><th>Hạn</th><th>Tiến độ / Trạng thái</th><th>Kết quả / Vướng mắc</th></tr></thead>
+          <tbody>${items.map(t => `<tr>
+            <td>${esc(t.ma)}</td>
+            <td>${esc(t.noiDung)}</td>
+            <td>${esc(t.donVi || "")}</td>
+            <td>${fmtDate(t.han) || esc(t.hanGoc || "")}</td>
+            <td>${esc(t.trangThai)} (${t.tienDo || 0}%)</td>
+            <td>${esc(t.ketQua || "")}</td>
+          </tr>`).join("")}</tbody>
+        </table>
+      </body></html>`;
+      const blob = new Blob(["\ufeff" + htmlDoc], { type: "application/msword;charset=utf-8" });
+      downloadBlob(blob, `bao-cao-${type}-${todayStr()}.doc`);
+      notify("Đã xuất báo cáo Word (.doc).");
+    });
+  });
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  /* Tooltip biểu đồ cột */
+  const tip = document.getElementById("bd-tip");
+  document.getElementById("bd-thang").addEventListener("pointermove", (e) => {
+    const col = e.target.closest(".bcot");
+    if (!col) { tip.hidden = true; return; }
+    tip.hidden = false;
+    tip.innerHTML = `
+      <b>${esc(col.dataset.tipTitle)}</b>
+      <div><span><i class="vach" style="background:var(--st-crit)"></i>Quá hạn</span><strong>${col.dataset.tipQ}</strong></div>
+      <div><span><i class="vach" style="background:var(--st-warn)"></i>Sắp hạn</span><strong>${col.dataset.tipS}</strong></div>
+      <div><span><i class="vach" style="background:var(--st-neutral)"></i>Đang làm</span><strong>${col.dataset.tipD}</strong></div>
+      <div><span><i class="vach" style="background:var(--st-good)"></i>Hoàn thành</span><strong>${col.dataset.tipX}</strong></div>
+      <em>Nhấn để lọc theo tháng này</em>
+    `;
+    tip.style.left = Math.min(window.innerWidth - 330, e.clientX + 12) + "px";
+    tip.style.top = Math.max(12, e.clientY - 130) + "px";
+  });
+  document.getElementById("bd-thang").addEventListener("pointerleave", () => { tip.hidden = true; });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

@@ -202,7 +202,7 @@ dialog::backdrop{background:rgba(20,10,8,.6)}
      ===================================================================== -->
 <script>
 window.APP_ENV = Object.freeze({
-  GAS_WEBAPP_URL: "https://script.google.com/macros/s/AKfycbzlYcSP4WyGTe3bCaxtC6V3ife018OyaSTezZvcLX2pHaWSiFfwjjsQGXQAnMDcdkpPOg/exec",
+  GAS_WEBAPP_URL: "https://script.google.com/macros/s/THAY_MA_DEPLOYMENT_CUA_BAN_VAO_DAY/exec",
   TEN_HE_THONG: "Theo dõi Nhiệm vụ & Kết luận Chỉ đạo Cấp xã",
   CO_QUAN: "ĐẢNG ỦY – UBND XÃ",
   TIEU_NGU: "Đoàn kết – Kỷ cương – Nêu gương – Phát triển",
@@ -380,7 +380,25 @@ window.APP_ENV = Object.freeze({
             </div>
 
             <div class="qt-card">
-              <h3>2. Cán bộ theo dõi</h3>
+              <h3>2. Lĩnh vực chuyên môn</h3>
+              <div class="qt-add">
+                <label class="o grow"><span>Tên lĩnh vực *</span><input type="text" id="qt-lv-ten" placeholder="VD: Đất đai – GPMB"></label>
+                <button type="button" class="btn chinh nho" id="btn-qt-lv-add">+ Thêm</button>
+              </div>
+              <ul class="qt-list" id="qt-list-lv"></ul>
+            </div>
+
+            <div class="qt-card">
+              <h3>3. Đơn vị / Bộ phận chủ trì</h3>
+              <div class="qt-add">
+                <label class="o grow"><span>Tên đơn vị / bộ phận *</span><input type="text" id="qt-dv-ten" placeholder="VD: Phòng Kinh tế"></label>
+                <button type="button" class="btn chinh nho" id="btn-qt-dv-add">+ Thêm</button>
+              </div>
+              <ul class="qt-list" id="qt-list-dv"></ul>
+            </div>
+
+            <div class="qt-card">
+              <h3>4. Cán bộ theo dõi</h3>
               <div class="qt-add">
                 <label class="o grow"><span>Họ tên / Chức danh *</span><input type="text" id="qt-cv-ten" placeholder="VD: Nguyễn Văn A"></label>
                 <button type="button" class="btn chinh nho" id="btn-qt-cv-add">+ Thêm</button>
@@ -389,7 +407,7 @@ window.APP_ENV = Object.freeze({
             </div>
 
             <div class="qt-card full">
-              <h3>3. Tài khoản người dùng (Đồng bộ với tab Users trên Google Sheet)</h3>
+              <h3>5. Tài khoản người dùng (Đồng bộ với tab Users trên Google Sheet)</h3>
               <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
                 <button type="button" class="btn nho" id="btn-qt-reload-users">↻ Tải lại từ Google Sheet</button>
                 <button type="button" class="btn chinh nho" id="btn-qt-push-users">↑ Lưu danh sách người dùng lên Google Sheet</button>
@@ -912,16 +930,28 @@ window.APP_ENV = Object.freeze({
     document.getElementById("qt-list-nguon").innerHTML = state.catalog.nguon.map((g, idx) => `
       <li class="qt-item">
         <div><b>[${esc(g.code)}]</b> ${esc(g.name)}</div>
-        <button type="button" class="btn nho nguyhiem" data-del-nguon="${idx}">Xóa</button>
+        <div style="display:flex;gap:6px">
+          <button type="button" class="btn nho" data-edit-nguon="${idx}">Sửa</button>
+          <button type="button" class="btn nho nguyhiem" data-del-nguon="${idx}">Xóa</button>
+        </div>
       </li>
     `).join("");
 
-    document.getElementById("qt-list-cv").innerHTML = state.catalog.cvTheoDoi.map((cv, idx) => `
-      <li class="qt-item">
-        <div>${esc(cv)}</div>
-        <button type="button" class="btn nho nguyhiem" data-del-cv="${idx}">Xóa</button>
-      </li>
-    `).join("");
+    const renderCatList = (elId, arr, key) => {
+      document.getElementById(elId).innerHTML = (arr || []).map((val, idx) => `
+        <li class="qt-item">
+          <div>${esc(val)}</div>
+          <div style="display:flex;gap:6px">
+            <button type="button" class="btn nho" data-edit-cat="${key}" data-idx="${idx}">Sửa</button>
+            <button type="button" class="btn nho nguyhiem" data-del-cat="${key}" data-idx="${idx}">Xóa</button>
+          </div>
+        </li>
+      `).join("");
+    };
+
+    renderCatList("qt-list-lv", state.catalog.linhVuc, "linhVuc");
+    renderCatList("qt-list-dv", state.catalog.donVi, "donVi");
+    renderCatList("qt-list-cv", state.catalog.cvTheoDoi, "cvTheoDoi");
 
     document.getElementById("qt-list-users").innerHTML = state.users.length ? state.users.map((u, idx) => `
       <li class="qt-item">
@@ -1071,15 +1101,22 @@ window.APP_ENV = Object.freeze({
     await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã cập nhật danh mục");
   });
 
-  document.getElementById("btn-qt-cv-add").addEventListener("click", async () => {
-    if (!isAdmin()) return;
-    const val = document.getElementById("qt-cv-ten").value.trim();
-    if (!val) return;
-    state.catalog.cvTheoDoi.push(val);
-    document.getElementById("qt-cv-ten").value = "";
-    renderApp();
-    await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã cập nhật cán bộ");
-  });
+  const bindCatAdd = (btnId, inputId, catKey, label) => {
+    document.getElementById(btnId).addEventListener("click", async () => {
+      if (!isAdmin()) return;
+      const val = document.getElementById(inputId).value.trim();
+      if (!val) return notify(`Vui lòng nhập tên ${label}.`);
+      state.catalog[catKey] = state.catalog[catKey] || [];
+      if (state.catalog[catKey].includes(val)) return notify(`${val} đã có trong danh mục.`);
+      state.catalog[catKey].push(val);
+      document.getElementById(inputId).value = "";
+      renderApp();
+      await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, `Đã thêm ${label}`);
+    });
+  };
+  bindCatAdd("btn-qt-lv-add", "qt-lv-ten", "linhVuc", "lĩnh vực");
+  bindCatAdd("btn-qt-dv-add", "qt-dv-ten", "donVi", "đơn vị chủ trì");
+  bindCatAdd("btn-qt-cv-add", "qt-cv-ten", "cvTheoDoi", "cán bộ theo dõi");
 
   document.getElementById("btn-qt-u-add").addEventListener("click", async () => {
     if (!isAdmin()) return;
@@ -1112,15 +1149,58 @@ window.APP_ENV = Object.freeze({
 
   document.getElementById("view-quan-tri").addEventListener("click", async (e) => {
     if (!isAdmin()) return;
+
+    if (e.target.dataset.editNguon !== undefined) {
+      const idx = Number(e.target.dataset.editNguon);
+      const item = state.catalog.nguon[idx];
+      if (!item) return;
+      const nextCode = prompt("Sửa mã nhóm:", item.code);
+      if (nextCode === null) return;
+      const nextName = prompt("Sửa tên nguồn chỉ đạo:", item.name);
+      if (nextName === null) return;
+      const cClean = nextCode.trim().toUpperCase();
+      const nClean = nextName.trim();
+      if (!cClean || !nClean) return;
+      const oldName = item.name;
+      item.code = cClean;
+      item.name = nClean;
+      state.tasks.forEach(t => { if (t.nguon === oldName) t.nguon = nClean; });
+      renderApp();
+      await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã cập nhật nguồn chỉ đạo");
+      return;
+    }
+
+    if (e.target.dataset.editCat !== undefined) {
+      const key = e.target.dataset.editCat;
+      const idx = Number(e.target.dataset.idx);
+      const arr = state.catalog[key] || [];
+      const oldVal = arr[idx];
+      if (oldVal === undefined) return;
+      const nextVal = prompt("Nhập tên mới:", oldVal);
+      if (nextVal === null) return;
+      const clean = nextVal.trim();
+      if (!clean || clean === oldVal) return;
+      arr[idx] = clean;
+      state.tasks.forEach(t => { if (t[key] === oldVal) t[key] = clean; });
+      renderApp();
+      await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã cập nhật danh mục");
+      return;
+    }
+
     if (e.target.dataset.delNguon !== undefined) {
+      if (!confirm("Xóa nguồn chỉ đạo này?")) return;
       state.catalog.nguon.splice(Number(e.target.dataset.delNguon), 1);
       renderApp();
       await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã xóa nhóm");
-    } else if (e.target.dataset.delCv !== undefined) {
-      state.catalog.cvTheoDoi.splice(Number(e.target.dataset.delCv), 1);
+    } else if (e.target.dataset.delCat !== undefined) {
+      const key = e.target.dataset.delCat;
+      const idx = Number(e.target.dataset.idx);
+      if (!confirm("Xóa mục này khỏi danh mục?")) return;
+      state.catalog[key].splice(idx, 1);
       renderApp();
-      await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã xóa cán bộ");
+      await postToGoogleSheet({ action: "saveCatalog", catalog: state.catalog }, "Đã xóa danh mục");
     } else if (e.target.dataset.delUser !== undefined) {
+      if (!confirm("Xóa tài khoản này?")) return;
       state.users.splice(Number(e.target.dataset.delUser), 1);
       renderAdmin();
       await postToGoogleSheet({ action: "saveUsers", users: state.users }, "Đã xóa tài khoản");

@@ -190,6 +190,11 @@ dialog::backdrop{background:rgba(20,10,8,.6)}
 .dlg-chan{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--surface);z-index:2}
 .dlg-chan .dan{margin-right:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .thongbao{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:0.9375rem;z-index:40;max-width:calc(100vw - 32px);box-shadow:var(--shadow)}
+.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:0.9rem}
+.pager-info{color:var(--ink-2)}
+.pager-ctrl{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pager-ctrl select{width:auto;min-height:36px;padding:5px 10px;font-size:0.875rem}
+.pager-ctrl button:disabled{opacity:.45;cursor:not-allowed}
 .hint-box{background:var(--neutral-bg);border:1px solid var(--line);border-radius:8px;padding:10px 13px;font-size:0.88rem}
 </style>
 </head>
@@ -208,7 +213,7 @@ window.APP_ENV = Object.freeze({
   TIEU_NGU: "Đoàn kết – Kỷ cương – Nêu gương – Phát triển",
   DIA_DANH: "Xã Cửa Tùng",
   PHU_DE: "Quản lý tiến độ nhiệm vụ cấp trên giao, nghị quyết – kết luận cấp xã, phân công cán bộ theo dõi và đôn đốc thực hiện.",
-  AUTO_SYNC_INTERVAL_MS: 60000
+  AUTO_SYNC_INTERVAL_MS: 0
 });
 </script>
 
@@ -350,6 +355,7 @@ window.APP_ENV = Object.freeze({
               <tbody id="ds-body"></tbody>
             </table>
           </div>
+          <div class="pager" id="ds-pager"></div>
         </div>
       </article>
     </section>
@@ -357,7 +363,10 @@ window.APP_ENV = Object.freeze({
     <section id="view-phan-cong" hidden>
       <article class="panel">
         <header><h2>Phân công cán bộ theo dõi</h2></header>
-        <div class="than" id="luoi-pc"></div>
+        <div class="than">
+          <div id="luoi-pc"></div>
+          <div class="pager" id="pc-pager"></div>
+        </div>
       </article>
     </section>
 
@@ -524,7 +533,10 @@ window.APP_ENV = Object.freeze({
 
   let activeUser = null;
   let editingId = null;
-  let syncTimer = null;
+  let taskPage = 1;
+  let taskPageSize = 50;
+  let assignPage = 1;
+  const ASSIGN_PAGE_SIZE = 50;
 
   async function sha256Hex(str) {
     const buf = new TextEncoder().encode(String(str ?? ""));
@@ -754,19 +766,10 @@ window.APP_ENV = Object.freeze({
     document.body.dataset.auth = "1";
     document.body.dataset.role = activeUser.role;
     renderApp();
-
-    clearInterval(syncTimer);
-    const interval = Number(ENV.AUTO_SYNC_INTERVAL_MS || 0);
-    if (interval >= 15000) {
-      syncTimer = setInterval(() => {
-        if (document.body.dataset.auth === "1") loadAllFromGoogleSheet(true);
-      }, interval);
-    }
   }
 
   function logout(reason = "Đã đăng xuất.") {
     activeUser = null;
-    clearInterval(syncTimer);
     sessionStorage.removeItem(SESSION_KEY);
     document.body.dataset.auth = "0";
     document.body.dataset.role = "viewer";
@@ -896,8 +899,15 @@ window.APP_ENV = Object.freeze({
       return true;
     });
 
+    const totalRows = rows.length;
+    const totalPages = Math.max(1, Math.ceil(totalRows / taskPageSize));
+    if (taskPage > totalPages) taskPage = totalPages;
+    if (taskPage < 1) taskPage = 1;
+    const startIdx = (taskPage - 1) * taskPageSize;
+    const pageRows = rows.slice(startIdx, startIdx + taskPageSize);
+
     const tb = document.getElementById("ds-body");
-    tb.innerHTML = rows.length ? rows.map(t => {
+    tb.innerHTML = pageRows.length ? pageRows.map(t => {
       const st = statusMeta(getStatusKey(t));
       return `<tr data-open-id="${esc(t.id)}">
         <td><button type="button" class="ma" data-open-id="${esc(t.id)}">${esc(t.ma)}</button></td>
@@ -909,12 +919,39 @@ window.APP_ENV = Object.freeze({
         <td class="can-ghi"><button type="button" class="btn nho" data-open-id="${esc(t.id)}">Sửa</button></td>
       </tr>`;
     }).join("") : `<tr><td colspan="7" class="trong">Không có nhiệm vụ phù hợp.</td></tr>`;
+
+    const pager = document.getElementById("ds-pager");
+    if (totalRows === 0) {
+      pager.innerHTML = "";
+    } else {
+      const fromNo = startIdx + 1;
+      const toNo = Math.min(startIdx + pageRows.length, totalRows);
+      pager.innerHTML = `
+        <div class="pager-info num">Hiển thị <b>${fromNo}–${toNo}</b> / <b>${totalRows}</b> nhiệm vụ (Trang ${taskPage}/${totalPages})</div>
+        <div class="pager-ctrl">
+          <select id="ds-page-size" aria-label="Số dòng mỗi trang">
+            ${[25, 50, 100, 200].map(sz => `<option value="${sz}" ${taskPageSize === sz ? "selected" : ""}>${sz} / trang</option>`).join("")}
+          </select>
+          <button type="button" class="btn nho" data-ds-page="1" ${taskPage <= 1 ? "disabled" : ""}>« Đầu</button>
+          <button type="button" class="btn nho" data-ds-page="${taskPage - 1}" ${taskPage <= 1 ? "disabled" : ""}>‹ Trước</button>
+          <button type="button" class="btn nho" data-ds-page="${taskPage + 1}" ${taskPage >= totalPages ? "disabled" : ""}>Sau ›</button>
+          <button type="button" class="btn nho" data-ds-page="${totalPages}" ${taskPage >= totalPages ? "disabled" : ""}>Cuối »</button>
+        </div>
+      `;
+    }
   }
 
   function renderAssignment() {
     const cvList = [...new Set([...state.catalog.cvTheoDoi, ...state.tasks.map(t => t.cvTheoDoi).filter(Boolean)])];
     const dis = canWrite() ? "" : "disabled";
-    document.getElementById("luoi-pc").innerHTML = state.tasks.length ? state.tasks.map(t => `
+    const total = state.tasks.length;
+    const totalPages = Math.max(1, Math.ceil(total / ASSIGN_PAGE_SIZE));
+    if (assignPage > totalPages) assignPage = totalPages;
+    if (assignPage < 1) assignPage = 1;
+    const startIdx = (assignPage - 1) * ASSIGN_PAGE_SIZE;
+    const pageItems = state.tasks.slice(startIdx, startIdx + ASSIGN_PAGE_SIZE);
+
+    document.getElementById("luoi-pc").innerHTML = pageItems.length ? pageItems.map(t => `
       <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line)">
         <span><b>${esc(t.ma)}</b> – ${esc(t.noiDung)}</span>
         <select style="max-width:260px" data-assign-id="${esc(t.id)}" ${dis}>
@@ -923,6 +960,23 @@ window.APP_ENV = Object.freeze({
         </select>
       </div>
     `).join("") : `<p class="trong">Chưa có nhiệm vụ nào.</p>`;
+
+    const pcPager = document.getElementById("pc-pager");
+    if (total <= ASSIGN_PAGE_SIZE) {
+      pcPager.innerHTML = total ? `<div class="pager-info num">Tổng cộng <b>${total}</b> nhiệm vụ</div>` : "";
+    } else {
+      const fromNo = startIdx + 1;
+      const toNo = Math.min(startIdx + pageItems.length, total);
+      pcPager.innerHTML = `
+        <div class="pager-info num">Hiển thị <b>${fromNo}–${toNo}</b> / <b>${total}</b> nhiệm vụ (Trang ${assignPage}/${totalPages})</div>
+        <div class="pager-ctrl">
+          <button type="button" class="btn nho" data-pc-page="1" ${assignPage <= 1 ? "disabled" : ""}>« Đầu</button>
+          <button type="button" class="btn nho" data-pc-page="${assignPage - 1}" ${assignPage <= 1 ? "disabled" : ""}>‹ Trước</button>
+          <button type="button" class="btn nho" data-pc-page="${assignPage + 1}" ${assignPage >= totalPages ? "disabled" : ""}>Sau ›</button>
+          <button type="button" class="btn nho" data-pc-page="${totalPages}" ${assignPage >= totalPages ? "disabled" : ""}>Cuối »</button>
+        </div>
+      `;
+    }
   }
 
   function renderAdmin() {
@@ -1207,14 +1261,34 @@ window.APP_ENV = Object.freeze({
     }
   });
 
-  /* Lọc & mở chi tiết */
+  /* Lọc, phân trang & mở chi tiết */
   ["f-q", "f-tt", "f-lv", "f-dv", "f-ng"].forEach(id => {
-    document.getElementById(id).addEventListener("input", renderTaskList);
-    document.getElementById(id).addEventListener("change", renderTaskList);
+    document.getElementById(id).addEventListener("input", () => { taskPage = 1; renderTaskList(); });
+    document.getElementById(id).addEventListener("change", () => { taskPage = 1; renderTaskList(); });
   });
   document.getElementById("f-reset").addEventListener("click", () => {
     document.getElementById("form-loc").reset();
+    taskPage = 1;
     renderTaskList();
+  });
+  document.getElementById("ds-pager").addEventListener("change", (e) => {
+    if (e.target.id === "ds-page-size") {
+      taskPageSize = Number(e.target.value) || 50;
+      taskPage = 1;
+      renderTaskList();
+    }
+  });
+  document.getElementById("ds-pager").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-ds-page]");
+    if (!btn || btn.disabled) return;
+    taskPage = Number(btn.dataset.dsPage) || 1;
+    renderTaskList();
+  });
+  document.getElementById("pc-pager").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-pc-page]");
+    if (!btn || btn.disabled) return;
+    assignPage = Number(btn.dataset.pcPage) || 1;
+    renderAssignment();
   });
   ["tq-loc-lv", "tq-loc-ng", "tq-loc-dv"].forEach(id => {
     document.getElementById(id).addEventListener("change", renderDashboard);
